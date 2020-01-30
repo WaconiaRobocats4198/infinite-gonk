@@ -26,6 +26,8 @@ public class Robot extends TimedRobot {
   public static MecanumDrive scoot = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
 
   limelight vision = new limelight();
+
+  colorParse colorWheel = new colorParse();
  
   @Override
   public void robotInit() {
@@ -61,6 +63,12 @@ public class Robot extends TimedRobot {
       System.out.println(ps4.getRawAxis(2));
       scoot.driveCartesian(ps4.getRawAxis(0), -ps4.getRawAxis(1), ps4.getRawAxis(2));
     // scoot.driveCartesian(roll, crab, rotate);
+    }
+    if(ps4.getRawButton(4)){
+      colorWheel.ColorControl(4);
+    }
+    if(ps4.getRawButton(5)){
+      colorWheel.ColorControl(5);
     }
   }
 

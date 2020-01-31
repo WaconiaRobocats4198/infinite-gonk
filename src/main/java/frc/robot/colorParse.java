@@ -35,21 +35,32 @@ public class colorParse {
             }while(setter != 2 || setter != -2);
         }
     }
-    String colorOutput(int blue, int green, int red){
-        if(red < 0 && red > -10 && green < 0 && green > -10 && blue < 0 && blue > -10){
-            return "R";
-        }
-        else if(red < 0 && red > -10 && green < 0 && green > -10 && blue < 0 && blue > -10){
-            return "G";
-        }
-        else if(red < 0 && red > -10 && green < 0 && green > -10 && blue < 0 && blue > -10){
+    String colorOutput(double cBlue, double cGreen, double cRed){
+        // double redBlue = cRed/cBlue;
+        // double redGreen = cRed/cGreen;
+        // double blueGreen = cBlue/cGreen; 
+        double blueRed = cBlue/cRed;
+        // double greenRed = cGreen/cRed;
+        // double greenBlue = cGreen/cBlue;
+        
+        if(cGreen > cRed && blueRed > 1.8){
+            // System.out.println("BLUE");
             return "B";
         }
-        else if(red < 0 && red > -10 && green < 0 && green > -10 && blue < 0 && blue > -10){
-            return "Y";
+        else if(cGreen > cBlue && cGreen > cRed){
+            if(cRed > cBlue){
+                return "Y";
+            }
+            else{
+                return "G";
+            }
         }
-        
-        return "non";
+        else if(cGreen > cBlue && cGreen < cRed ) {
+            return "R";
+        }
+        else{
+            return "oops";
+        }
     }
     int colorConvert (String input){
         if(input == "B"){

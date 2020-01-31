@@ -21,15 +21,18 @@ public class colorParse {
         if(button == 4){
             do{
                 if(previousColor != colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed())){
+                    //motor.set()
                     counts ++;
                     previousColor = colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed());
                 }
             }while(counts <= 15);
         }
         else if(button == 5){
+            int setter =colorConvert(colorSet);
             do{
                 //motor.set()
-            }while(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed()) != colorSet);
+                setter = setter - colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed()));
+            }while(setter != 2 || setter != -2);
         }
     }
     String colorOutput(int blue, int green, int red){
@@ -47,5 +50,22 @@ public class colorParse {
         }
         
         return "non";
+    }
+    int colorConvert (String input){
+        if(input == "B"){
+            return 1;
+        }
+        else if(input == "G"){
+            return 2;
+        }
+        else if(input == "R"){
+            return 3;
+        }
+        else if(input == "Y"){
+            return 4;
+        }
+        else{
+            return 0;
+        }
     }
 }

@@ -70,4 +70,7 @@ public class limelight{
         }
 
     }
+    int camDistance(){
+      return -1;
+    }
 }

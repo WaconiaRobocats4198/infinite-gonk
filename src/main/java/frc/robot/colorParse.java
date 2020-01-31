@@ -16,16 +16,17 @@ public class colorParse {
 
     void ColorControl(int button){
         int counts = 0;
-        String previousColor = colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed());
+        int previousColor = colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed()));
 
         if(button == 4){
             do{
-                if(previousColor != colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed())){
+                if(colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed())) != previousColor 
+                    && colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed())) != 0){
                     //motor.set()
                     counts ++;
-                    previousColor = colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed());
+                    previousColor = colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed()));
                 }
-            }while(counts <= 15);
+            }while(counts <= 28);
         }
         else if(button == 5){
             int setter =colorConvert(colorSet);

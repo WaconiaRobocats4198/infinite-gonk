@@ -70,7 +70,11 @@ public class limelight{
         }
 
     }
-    int camDistance(){
-      return -1;
+    public double offsetCalculator(){
+      
+      
+      
+      
+      return 0.0;
     }
 }

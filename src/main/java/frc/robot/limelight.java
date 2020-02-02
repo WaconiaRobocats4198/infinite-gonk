@@ -88,7 +88,7 @@ public class limelight{
       double xOff = tx.getDouble(0.0);
 
       double distance = (targetHeight-heightFloor)/Math.tan(yOff + llAngle);
-      distance = distance - llOffset * Math.tan(xOff);
+      distance = distance - llOffset * Math.cos(90-xOff);
       
       return distance;
     }

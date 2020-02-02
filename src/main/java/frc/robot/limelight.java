@@ -25,9 +25,11 @@ public class limelight{
     
       NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
       NetworkTableEntry tx = table.getEntry("tx");
+      NetworkTableEntry ty = table.getEntry("ty");
       NetworkTableEntry tv = table.getEntry("tv");
       NetworkTableEntry ta = table.getEntry("ta");
       NetworkTableEntry ts = table.getEntry("ts");
+      NetworkTableEntry tvert = table.getEntry("tvert");
       NetworkTableEntry tlong = table.getEntry("tlong");
       NetworkTableEntry tshort = table.getEntry("tshort");
   
@@ -51,12 +53,12 @@ public class limelight{
         System.out.println(isTarget);
         if(isTarget != 0){
           System.out.println(xTranslate);
-            if(xTranslate <=-1){
+            if(xTranslate <= offsetCalculator() - 1){
                 System.out.println(-0.4*Math.pow(-xTranslate/54, 0.5));
                 Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1),-0.4*Math.pow(-xTranslate/54, 0.5));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.2);
             }
-            else if(xTranslate >=1){
+            else if(xTranslate >= offsetCalculator() + 1){
               System.out.println(0.4*Math.pow(xTranslate/54, 0.5));
                 Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.4*Math.pow(xTranslate/54, 0.5));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.2);
@@ -71,10 +73,23 @@ public class limelight{
 
     }
     public double offsetCalculator(){
+      double inchOffRobot = 6;
+      double offset = Math.atan(inchOffRobot/rangeFinder()); 
       
+      return offset;
+    }
+    public double rangeFinder(){
+      double heightFloor = 24;
+      double llOffset = 6;
+      double llAngle = 20;
+      double targetHeight = 8.1875;
+
+      double yOff = ty.getDouble(0.0);
+      double xOff = tx.getDouble(0.0);
+
+      double distance = (targetHeight-heightFloor)/Math.tan(yOff + llAngle);
+      distance = distance - llOffset * Math.tan(xOff);
       
-      
-      
-      return 0.0;
+      return distance;
     }
 }

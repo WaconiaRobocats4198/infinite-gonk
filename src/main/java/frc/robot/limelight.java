@@ -76,6 +76,7 @@ public class limelight{
       double inchOffRobot = 6;
       double offset = Math.atan(inchOffRobot/rangeFinder()); 
       
+      offset = (offset * 360)/Math.PI;
       return offset;
     }
     public double rangeFinder(){
@@ -87,8 +88,8 @@ public class limelight{
       double yOff = ty.getDouble(0.0);
       double xOff = tx.getDouble(0.0);
 
-      double distance = (targetHeight-heightFloor)/Math.tan(yOff + llAngle);
-      distance = distance - llOffset * Math.cos(90-Math.abs(xOff));
+      double distance = (targetHeight-heightFloor)/Math.tan((yOff + llAngle) * (Math.PI *2)/360);
+      distance = distance - llOffset * Math.sin((Math.abs(xOff) * 2*Math.PI)/360);
       
       return distance;
     }

@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
   public static WPI_TalonSRX backLeft = new WPI_TalonSRX(6);
   public static WPI_TalonSRX backRight = new WPI_TalonSRX(7);
   
+  public static boolean InverseControls;
   public static MecanumDrive scoot = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
 
   limelight vision = new limelight();
@@ -51,17 +52,22 @@ public class Robot extends TimedRobot {
     
   }
 
+
   
   @Override
   public void teleopPeriodic() {
+    int controlMultiply = 1;
+    if(ps4.getRawButtonReleased(1)){
+      controlMultiply = controlMultiply * -1;
+    }    
+      
   
     if(ps4.getRawButton(3)){
       System.out.println("Button pressed");
       vision.camControl();
     }
     else{
-      System.out.println(ps4.getRawAxis(2));
-      scoot.driveCartesian(ps4.getRawAxis(0), -ps4.getRawAxis(1), ps4.getRawAxis(2));
+      scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);
     }
     if(ps4.getRawButton(4)){

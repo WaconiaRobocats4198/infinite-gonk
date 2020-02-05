@@ -22,8 +22,6 @@ public class Robot extends TimedRobot {
   public static WPI_TalonSRX frontRight = new WPI_TalonSRX(5);
   public static WPI_TalonSRX backLeft = new WPI_TalonSRX(6);
   public static WPI_TalonSRX backRight = new WPI_TalonSRX(7);
-  
-  public static boolean InverseControls;
   public static MecanumDrive scoot = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
 
   limelight vision = new limelight();

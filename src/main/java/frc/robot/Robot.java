@@ -39,6 +39,9 @@ public class Robot extends TimedRobot {
   limelight vision = new limelight();
 
   colorParse colorWheel = new colorParse();
+
+  autoBlocks basicallyAI = new autoBlocks();
+
   public static void launch(){
     
   }
@@ -62,7 +65,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    
+    basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
   }
 
   

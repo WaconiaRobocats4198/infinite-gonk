@@ -47,9 +47,11 @@ public class limelight{
         .getEntry();
       final double visionSpeed = .666;
       final double turnval = .4;
+      public double xTranslate;
+      public int isTarget;
     public void camControl(){
-        double xTranslate = tx.getDouble(0.0);
-        int isTarget = (int)tv.getDouble(0.0);
+        xTranslate = tx.getDouble(0.0);
+        isTarget = (int)tv.getDouble(0.0);
         System.out.println(isTarget);
         if(isTarget != 0){
           System.out.println(xTranslate);
@@ -93,4 +95,5 @@ public class limelight{
       
       return distance;
     }
+    
 }

@@ -1,13 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANEncoder;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.*;
+// import edu.wpi.first.wpilibj.drive.MecanumDrive;
+// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+// import com.revrobotics.CANSparkMax;
+// import com.revrobotics.CANEncoder;
+// import edu.wpi.first.networktables.NetworkTable;
+// import edu.wpi.first.networktables.NetworkTableEntry;
+// import edu.wpi.first.networktables.NetworkTableInstance;
+// import edu.wpi.first.wpilibj.shuffleboard.*;
 
 
 public class autoBlocks {
@@ -74,10 +74,12 @@ public class autoBlocks {
             Robot.launch();
             straight(-70);
             autoCam();
+            launcheyBoi.tip();
+            Robot.launch();
             straight(-200);
         }
         if(position == 2){
-            
+
         }
     }
     public void autoCam(){

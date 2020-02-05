@@ -73,7 +73,6 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
   
     if(ps4.getRawButton(3)){
-      System.out.println("Button pressed");
       vision.camControl();
     }
     else{

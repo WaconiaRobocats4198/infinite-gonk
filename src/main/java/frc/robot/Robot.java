@@ -24,15 +24,15 @@ public class Robot extends TimedRobot {
   public static WPI_TalonSRX backLeft = new WPI_TalonSRX(6);
   public static WPI_TalonSRX backRight = new WPI_TalonSRX(7);
 
-  public static CANSparkMax frontL = new CANSparkMax(1, MotorType.kBrushless);
-  public static CANSparkMax frontR = new CANSparkMax(2, MotorType.kBrushless);
-  public static CANSparkMax backL = new CANSparkMax(3, MotorType.kBrushless);
-  public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);
+  // public static CANSparkMax frontL = new CANSparkMax(1, MotorType.kBrushless);
+  // public static CANSparkMax frontR = new CANSparkMax(2, MotorType.kBrushless);
+  // public static CANSparkMax backL = new CANSparkMax(3, MotorType.kBrushless);
+  // public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);
 
-  public static CANEncoder flEnc = new CANEncoder(frontL);
-  public static CANEncoder frEnc = new CANEncoder(frontR);
-  public static CANEncoder blEnc = new CANEncoder(backL);
-  public static CANEncoder brEnc = new CANEncoder(backR);
+  // public static CANEncoder flEnc = new CANEncoder(frontL);
+  // public static CANEncoder frEnc = new CANEncoder(frontR);
+  // public static CANEncoder blEnc = new CANEncoder(backL);
+  // public static CANEncoder brEnc = new CANEncoder(backR);
   
   public static MecanumDrive scoot = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
 
@@ -40,15 +40,16 @@ public class Robot extends TimedRobot {
 
   colorParse colorWheel = new colorParse();
 
-  autoBlocks basicallyAI = new autoBlocks();
+  // autoBlocks basicallyAI = new autoBlocks();
 
+  
+  double controlMultiply = 1;
   public static void launch(){
     
   }
  
   @Override
   public void robotInit() {
-    
   }
 
   
@@ -65,17 +66,19 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
+    // basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
   }
 
 
   
   @Override
   public void teleopPeriodic() {
-    int controlMultiply = 1;
-    if(ps4.getRawButtonReleased(1)){
-      controlMultiply = controlMultiply * -1;
+    if(ps4.getRawButtonReleased(1) ){
+      // System.out.println("SHOULD BE FLIPPING");
+      controlMultiply = controlMultiply * (-1);
     }    
+    
+    // System.out.println(controlMultiply);
       
   
     if(ps4.getRawButton(3)){

@@ -84,7 +84,7 @@ public class limelight{
     public double rangeFinder(){
       double heightFloor = 24;
       double llOffset = 6;
-      double llAngle = 20;
+      double llAngle = 18.75;
       double targetHeight = 8.1875;
 
       double yOff = ty.getDouble(0.0);

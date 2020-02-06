@@ -68,16 +68,21 @@ public class Robot extends TimedRobot {
     basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
   }
 
+
   
   @Override
   public void teleopPeriodic() {
+    int controlMultiply = 1;
+    if(ps4.getRawButtonReleased(1)){
+      controlMultiply = controlMultiply * -1;
+    }    
+      
   
     if(ps4.getRawButton(3)){
       vision.camControl();
     }
     else{
-      System.out.println(ps4.getRawAxis(2));
-      scoot.driveCartesian(ps4.getRawAxis(0), -ps4.getRawAxis(1), ps4.getRawAxis(2));
+      scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);
     }
     if(ps4.getRawButton(4)){

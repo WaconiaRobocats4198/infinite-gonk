@@ -75,11 +75,18 @@ public class autoBlocks {
             straight(-70);
             autoCam();
             launcheyBoi.tip();
-            Robot.launch();
             straight(-200);
         }
         if(position == 2){
-
+            straight(-35);
+            if(autoLime.xTranslate > 1 || autoLime.xTranslate < -1){
+                Robot.scoot.driveCartesian(0, 1, 0);
+            }
+            else{
+                Robot.scoot.driveCartesian(0, 0, 0);
+            }
+            launcheyBoi.innerSet();
+            straight(-200);
         }
     }
     public void autoCam(){

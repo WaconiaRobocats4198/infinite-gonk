@@ -6,6 +6,9 @@ public class launchAngler {
     public void tip(){
         
     }
+    public void innerSet(){
+
+    }
 
 
 }

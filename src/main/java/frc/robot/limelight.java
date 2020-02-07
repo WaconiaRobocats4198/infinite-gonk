@@ -75,10 +75,10 @@ public class limelight{
 
     }
     public double offsetCalculator(){
-      double inchOffRobot = 6;
+      double inchOffRobot = 4.25;
       double offset = Math.atan(inchOffRobot/rangeFinder()); 
       
-      offset = (offset * 360)/Math.PI;
+      offset = (offset * 180)/Math.PI;
       return offset;
     }
     public double rangeFinder(){

@@ -14,19 +14,44 @@ public class colorParse {
 
     String colorSet = DriverStation.getInstance().getGameSpecificMessage();
 
+    String currentColor;
+
     void ColorControl(int button){
         int counts = 0;
-        int previousColor = colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed()));
+        String lastColor = "";
 
         if(button == 4){
+            int yellow = 0;
+            int blue = 0;
+            int green = 0;
+            int red = 0;
+            String lastTrue = colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed());
             do{
-                if(colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed())) != previousColor 
-                    && colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed())) != 0){
-                    //motor.set()
-                    counts ++;
-                    previousColor = colorConvert(colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed()));
+                currentColor = colorOutput(scan.getBlue(), scan.getGreen(), scan.getRed());
+                if(lastColor != currentColor){
+                    if(currentColor == "B" && lastTrue ==  "G"){
+                        blue++;
+                        counts = blue;
+                        lastTrue = currentColor;
+                    }
+                    else if(currentColor == "G" && lastTrue == "R"){
+                        green++;
+                        counts = green;
+                        lastTrue = currentColor;
+                    }
+                    else if(currentColor == "R" && lastTrue == "Y"){
+                        red++;
+                        counts = red;
+                        lastTrue = currentColor;
+                    }
+                    else if(currentColor == "Y" && lastTrue == "B"){
+                        yellow++;
+                        counts = yellow;
+                        lastTrue = currentColor;
+                    }
                 }
-            }while(counts <= 28);
+                lastColor = currentColor;
+            }while(counts <= 7);
         }
         else if(button == 5){
             int setter =colorConvert(colorSet);
@@ -44,7 +69,7 @@ public class colorParse {
         // double greenRed = cGreen/cRed;
         // double greenBlue = cGreen/cBlue;
         
-        if(cGreen > cRed && blueRed > 1.8){
+        if(cGreen > cRed && blueRed > 2){
             // System.out.println("BLUE");
             return "B";
         }

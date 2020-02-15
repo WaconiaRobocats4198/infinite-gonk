@@ -103,16 +103,14 @@ public class Robot extends TimedRobot {
 
     uSpeedControl.setReference(5400, ControlType.kVelocity);
     lSpeedControl.setReference(5400, ControlType.kVelocity);
-    if(mode == 1 && System.currentTimeMillis() <= launchCountdown && launchStatus == true){
-      
+    if(ballWasFront == true && outSensor.get() == false){
+      ballCount++;
     }
-    else if(mode == 2 && System.currentTimeMillis() <= launchCountdown &&
-     launchStatus == true && ballsOut == false){
-
-      if(ballWasFront == true && outSensor.get() == false){
-        ballCount++;
-      }
-      ballWasFront = outSensor.get();
+    ballWasFront = outSensor.get();
+    if(System.currentTimeMillis() <= launchCountdown &&
+      launchStatus == true && ballCount < mode){
+        //beltindexer.set(min, kVelocity)
+      
     }
   }
 
@@ -173,9 +171,11 @@ public class Robot extends TimedRobot {
     }
     if(logi.getRawButtonPressed(2)){
       launchCountdown = System.currentTimeMillis() + launchWait;
+      ballCount = 0;
     }
     if(logi.getRawButtonPressed(1)){
       launchCountdown = System.currentTimeMillis() + launchWait;
+      ballCount = 0;
     }
     if(logi.getRawButton(2)){
       launch(1);

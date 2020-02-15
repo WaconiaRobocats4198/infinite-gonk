@@ -18,17 +18,18 @@ public class launchAngler {
         positionTarget = (targetAngle - startAngle)/5.07;
 
         Robot.pitcherPID.setReference(positionTarget, ControlType.kPosition);
+        if(Math.abs(Robot.pitchEnc.getPosition() - positionTarget) < 0.2){
+            Robot.launchStatus = true;
+        }
     }
     public void innerSet(){
         double innerHoleAngle = 21;
         angleSet(21);
     }
     public void autoLaunchTime(){
-        if(Math.abs(Robot.pitchEnc.getPosition() - positionTarget) < 0.2){
-            Robot.launchStatus = true;
-        }
         if(Robot.launchStatus == true && launchLast == false){
             Robot.launchCountdown = System.currentTimeMillis() + Robot.launchWait;
+            Robot.ballCount = 0;
         }
         launchLast = Robot.launchStatus;
         

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -11,8 +12,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 
 
 public class Robot extends TimedRobot {
@@ -31,45 +35,91 @@ public class Robot extends TimedRobot {
   public static CANSparkMax bottomLaunch = new CANSparkMax(8, MotorType.kBrushless);
   public static CANSparkMax climber = new CANSparkMax(9, MotorType.kBrushless);
   public static CANSparkMax ballIn = new CANSparkMax(10, MotorType.kBrushless);
-  // public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);
+  public static CANSparkMax climbWinch = new CANSparkMax(11, MotorType.kBrushless);
   // public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);
 
   public static CANEncoder flEnc = new CANEncoder(frontL);
   public static CANEncoder frEnc = new CANEncoder(frontR);
   public static CANEncoder blEnc = new CANEncoder(backL);
   public static CANEncoder brEnc = new CANEncoder(backR);
+  public static CANEncoder pitchEnc = new CANEncoder(pitcher);
   public static CANEncoder beltEnc = new CANEncoder(belt);
   public static CANEncoder topLaunchEnc = new CANEncoder(topLaunch);
   public static CANEncoder botLaunchEnc = new CANEncoder(bottomLaunch);
 
+  public static CANPIDController pitcherPID = new CANPIDController(pitcher);
+  public static CANPIDController uSpeedControl = new CANPIDController(bottomLaunch);
+  public static CANPIDController lSpeedControl = new CANPIDController(topLaunch);
+
   public static DigitalInput inSensor = new DigitalInput(0);
   public static DigitalInput outSensor = new DigitalInput(1);
-  public static DigitalInput ballIntakeTrigger = new DigitalInput(2);
   
   public static MecanumDrive scoot = new MecanumDrive(frontL, backL, frontR, backR);
+
+  public static AnalogInput zero = new AnalogInput(0);
 
   limelight vision = new limelight();
 
   colorParse colorWheel = new colorParse();
 
+  public static double kP = 1e-4; 
+  public static double kI = 3e-7;
+  public static double kD = 0; 
+  public static double kIz = 0; 
+  public static double kFF = 0; 
+  public static double kMaxOutput = 1; 
+  public static double kMinOutput = -1;
+  public static double maxRPM = 5700;
+
+  public static double pAdjust = -4;
+
+  public static double launchCountdown;
+  public static double launchWait;
+  public static boolean launchStatus;
+
+  public static boolean ballsOut = false;
+  public static boolean ballWasFront = false;
+  public static int ballCount;
+
   // autoBlocks basicallyAI = new autoBlocks();
 
   
   double controlMultiply = 1;
+
   public static void launch(int mode){
-    if(mode == 1){
+    uSpeedControl.setP(kP);
+    uSpeedControl.setI(kI);
+    uSpeedControl.setD(kD);
+    uSpeedControl.setIZone(kIz);
+    uSpeedControl.setFF(kFF);
+    uSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
 
+    lSpeedControl.setP(kP);
+    lSpeedControl.setI(kI);
+    lSpeedControl.setD(kD);
+    lSpeedControl.setIZone(kIz);
+    lSpeedControl.setFF(kFF);
+    lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
+
+    uSpeedControl.setReference(5400, ControlType.kVelocity);
+    lSpeedControl.setReference(5400, ControlType.kVelocity);
+    if(ballWasFront == true && outSensor.get() == false){
+      ballCount++;
     }
-    else if(mode == 2){
-
+    ballWasFront = outSensor.get();
+    if(System.currentTimeMillis() <= launchCountdown &&
+      launchStatus == true && ballCount < mode){
+        //beltindexer.set(min, kVelocity)
+      
     }
   }
+
   public static void beltIndexer(){
     if(inSensor.get()){
       //beltDrive.setReference(400, kVelocity)
     }
     else{
-      // beltMotor.set(0);
+      belt.set(0);
     }
   }
  
@@ -149,6 +199,20 @@ public class Robot extends TimedRobot {
     }
     if(ps4.getRawButton(5)){
       colorWheel.ColorControl(5);
+    }
+    if(logi.getRawButtonPressed(2)){
+      launchCountdown = System.currentTimeMillis() + launchWait;
+      ballCount = 0;
+    }
+    if(logi.getRawButtonPressed(1)){
+      launchCountdown = System.currentTimeMillis() + launchWait;
+      ballCount = 0;
+    }
+    if(logi.getRawButton(2)){
+      launch(1);
+    }
+    if(logi.getRawButton(1)){
+      launch(2);
     }
   }
 

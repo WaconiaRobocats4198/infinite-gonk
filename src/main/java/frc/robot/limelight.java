@@ -48,12 +48,23 @@ public class limelight{
       final double visionSpeed = .666;
       final double turnval = .4;
       public double xTranslate;
+      public double yTranslate;
+      public double yOffLimit;
+
+      public boolean trueTarget;
+
       public int isTarget;
     public void camControl(){
         xTranslate = tx.getDouble(0.0);
+        yTranslate = ty.getDouble(0.0);
         isTarget = (int)tv.getDouble(0.0);
-        System.out.println(isTarget);
-        if(isTarget != 0){
+        if(yTranslate <= yOffLimit && isTarget != 0){
+          trueTarget = false;
+        }
+        else{
+          trueTarget = true;
+        }
+        if(trueTarget == true){
           System.out.println(xTranslate);
             if(xTranslate <= offsetCalculator() - 1){
                 System.out.println(-0.4*Math.pow(-xTranslate/54, 0.5));

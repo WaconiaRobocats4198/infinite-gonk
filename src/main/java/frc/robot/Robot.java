@@ -98,6 +98,37 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
+
+    if(logi.getRawButton(3)){
+      pitcher.set(logi.getRawAxis(1)*0.5);
+    }
+    
+    if(logi.getRawButton(6) && logi.getRawButton(3)){
+      belt.set(0.3);
+    }
+    else if(logi.getRawButton(6) == false){
+      belt.set(0);
+    }
+    if(logi.getRawButton(7) && logi.getRawButton(3)){
+      belt.set(-0.3);
+    }
+    else if(logi.getRawButton(7) == false){
+      belt.set(0);
+    }
+
+
+    if(logi.getRawButton(8)){
+      ballIn.set(1);
+    }
+    else if(logi.getRawButton(8) == false){
+      ballIn.set(0);
+    }
+
+    if(logi.getRawButton(9)){
+      ballIn.set(-1);
+    }
+    else
+
     if(ps4.getRawButtonReleased(1) ){
       // System.out.println("SHOULD BE FLIPPING");
       controlMultiply = controlMultiply * (-1);

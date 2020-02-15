@@ -27,15 +27,15 @@ public class Robot extends TimedRobot {
 
   public static CANSparkMax frontL = new CANSparkMax(1, MotorType.kBrushless);
   public static CANSparkMax frontR = new CANSparkMax(2, MotorType.kBrushless);
-  public static CANSparkMax backL = new CANSparkMax(3, MotorType.kBrushless);
-  public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);
-  public static CANSparkMax pitcher = new CANSparkMax(5, MotorType.kBrushless);
-  public static CANSparkMax belt = new CANSparkMax(6, MotorType.kBrushless);
-  public static CANSparkMax topLaunch = new CANSparkMax(7, MotorType.kBrushless);
-  public static CANSparkMax bottomLaunch = new CANSparkMax(8, MotorType.kBrushless);
-  public static CANSparkMax climber = new CANSparkMax(9, MotorType.kBrushless);
-  public static CANSparkMax ballIn = new CANSparkMax(10, MotorType.kBrushless);
-  public static CANSparkMax climbWinch = new CANSparkMax(11, MotorType.kBrushless);
+  public static CANSparkMax backL = new CANSparkMax(11, MotorType.kBrushless);
+  public static CANSparkMax backR = new CANSparkMax(12, MotorType.kBrushless);
+  public static CANSparkMax pitcher = new CANSparkMax(10, MotorType.kBrushless);
+  public static CANSparkMax belt = new CANSparkMax(5, MotorType.kBrushless);
+  public static CANSparkMax topLaunch = new CANSparkMax(6, MotorType.kBrushless);
+  public static CANSparkMax bottomLaunch = new CANSparkMax(7, MotorType.kBrushless);
+  // public static CANSparkMax climber = new CANSparkMax(9, MotorType.kBrushless);
+  public static CANSparkMax ballIn = new CANSparkMax(4, MotorType.kBrushed);
+  public static CANSparkMax climbWinch = new CANSparkMax(3, MotorType.kBrushless);
   // public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);
 
   public static CANEncoder flEnc = new CANEncoder(frontL);

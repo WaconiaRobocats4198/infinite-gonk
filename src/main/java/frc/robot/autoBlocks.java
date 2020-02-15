@@ -73,7 +73,7 @@ public class autoBlocks {
             do{
                 launcheyBoi.tip();
                 launcheyBoi.autoLaunchTime();
-                Robot.launch(2);
+                Robot.launch(3);
             }while(Robot.ballCount <3);
             straight(-70);
             autoCam();

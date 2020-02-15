@@ -62,6 +62,8 @@ public class Robot extends TimedRobot {
 
   colorParse colorWheel = new colorParse();
 
+  launchAngler sniper = new launchAngler();
+
   public static double kP = 1e-4; 
   public static double kI = 3e-7;
   public static double kD = 0; 
@@ -152,17 +154,34 @@ public class Robot extends TimedRobot {
     if(logi.getRawButton(3)){
       pitcher.set(logi.getRawAxis(1)*0.5);
     }
+    else if(ps4.getRawButton(2)){
+      vision.camControl();
+      sniper.tip();
+    }
+    else{
+      pitcher.set(0);
+    }
     
     if(logi.getRawButton(6) && logi.getRawButton(3)){
       belt.set(0.3);
     }
-    else if(logi.getRawButton(6) == false){
-      belt.set(0);
+    else if(inSensor.get()){
+      beltIndexer();
     }
-    if(logi.getRawButton(7) && logi.getRawButton(3)){
+    else if(logi.getRawButtonPressed(2) || logi.getRawButtonPressed(1)){
+      launchCountdown = System.currentTimeMillis() + launchWait;
+      ballCount = 0;
+    }
+    else if(logi.getRawButton(2)){
+      launch(1);
+    }
+    else if(logi.getRawButton(1)){
+      launch(5);
+    }
+    else if(logi.getRawButton(7) && logi.getRawButton(3)){
       belt.set(-0.3);
     }
-    else if(logi.getRawButton(7) == false){
+    else{
       belt.set(0);
     }
 
@@ -170,14 +189,12 @@ public class Robot extends TimedRobot {
     if(logi.getRawButton(8)){
       ballIn.set(1);
     }
-    else if(logi.getRawButton(8) == false){
-      ballIn.set(0);
-    }
-
-    if(logi.getRawButton(9)){
+    else if(logi.getRawButton(9)){
       ballIn.set(-1);
     }
-    else
+    else{
+      ballIn.set(0);
+    }
 
     if(ps4.getRawButtonReleased(1) ){
       // System.out.println("SHOULD BE FLIPPING");
@@ -200,20 +217,7 @@ public class Robot extends TimedRobot {
     if(ps4.getRawButton(5)){
       colorWheel.ColorControl(5);
     }
-    if(logi.getRawButtonPressed(2)){
-      launchCountdown = System.currentTimeMillis() + launchWait;
-      ballCount = 0;
-    }
-    if(logi.getRawButtonPressed(1)){
-      launchCountdown = System.currentTimeMillis() + launchWait;
-      ballCount = 0;
-    }
-    if(logi.getRawButton(2)){
-      launch(1);
-    }
-    if(logi.getRawButton(1)){
-      launch(2);
-    }
+    
   }
 
  

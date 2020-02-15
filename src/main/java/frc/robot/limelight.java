@@ -51,6 +51,8 @@ public class limelight{
       public double yTranslate;
       public double yOffLimit;
 
+      double distance;
+
       public boolean trueTarget;
 
       public int isTarget;
@@ -92,18 +94,23 @@ public class limelight{
       offset = (offset * 180)/Math.PI;
       return offset;
     }
+    
     public double rangeFinder(){
-      double heightFloor = 24;
-      double llOffset = 6;
-      double llAngle = 18.75;
-      double targetHeight = 8.1875;
+      if(trueTarget == true){
+        double heightFloor = 24;
+        double llOffset = 6;
+        double llAngle = 18.75;
+        double targetHeight = 8.1875;
 
-      double yOff = ty.getDouble(0.0);
-      double xOff = tx.getDouble(0.0);
+        double yOff = ty.getDouble(0.0);
+        double xOff = tx.getDouble(0.0);
 
-      double distance = (targetHeight-heightFloor)/Math.tan((yOff + llAngle) * (Math.PI *2)/360);
-      distance = distance - llOffset * Math.sin((Math.abs(xOff) * 2*Math.PI)/360);
-      
+        distance = (targetHeight-heightFloor)/Math.tan((yOff + llAngle) * (Math.PI *2)/360);
+        distance = distance - llOffset * Math.sin((Math.abs(xOff) * 2*Math.PI)/360);
+      }
+      else{
+        distance = -1;
+      }
       return distance;
     }
     

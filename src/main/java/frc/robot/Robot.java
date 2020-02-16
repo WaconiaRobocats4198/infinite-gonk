@@ -201,7 +201,7 @@ public class Robot extends TimedRobot {
       }
       if(logi.getRawButton(1)){
         topLaunch.set(1);
-        bottomLaunch.set(1)
+        bottomLaunch.set(1);
       }
     }
     else if(inSensor.get() == false){

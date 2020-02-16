@@ -160,6 +160,8 @@ public class Robot extends TimedRobot {
     ballIn.setInverted(true);
     topLaunch.setInverted(true);
     bottomLaunch.setInverted(true);
+    belt.setInverted(true);
+    pitcher.setInverted(true);
   }
 
   
@@ -176,42 +178,65 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    ballsOut.ballsIn();
-    int finalChoice = (int)autoChoice.getSelected();
-    basicallyAI.fullAuto(finalChoice);
+    // ballsOut.ballsIn();
+    // int finalChoice = (int)autoChoice.getSelected();
+    // basicallyAI.fullAuto(finalChoice);
   }
 
 
   
   @Override
   public void teleopPeriodic() {
-    if(zero.get()){
-      pitchEnc.setPosition(0);
-    }
-    System.out.println(vision.rangeFinder() + " range");
+    System.out.println(logi.getRawAxis(0));
+    // System.out.println(pitchEnc.getPosition() + " pitchEnc");
+    // System.out.println(zero.get());
+    // if(zero.get()){
+    //   pitchEnc.setPosition(0);
+    // }
+    // System.out.println(vision.rangeFinder() + " range");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
+    pitcherPID.setP(1e-5);
+    pitcherPID.setI(1e-7);
     if(logi.getRawButton(3)){
-      pitcher.set(logi.getRawAxis(1)*0.5);
+      if(ps4.getRawButton(2)){
+        sniper.tip();
+      }
+      else{
+        if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
+          pitcherPID.setReference(0, ControlType.kVelocity);
+        }
+        else{
+          pitcher.set(logi.getRawAxis(0)*0.25);
+        }
+      }
     }
-    else if(ps4.getRawButton(2)){
-      vision.camControl();
-      sniper.tip();
-    }
+
     else{
-      pitcher.set(0);
+      pitcherPID.setReference(0, ControlType.kVelocity);
     }
     
     if(logi.getRawButton(3)){
       if(logi.getRawButton(6)){
         belt.set(0.3);
       }
+      else if(logi.getRawButton(7)){
+        belt.set(-0.3);
+      }
+      else{
+        belt.set(0);
+      }
       if(logi.getRawButton(1)){
         topLaunch.set(1);
         bottomLaunch.set(1);
       }
+      else{
+        topLaunch.set(0);
+        bottomLaunch.set(0);
+      }
+      
     }
-    else if(inSensor.get() == false){
+    else if(inSensor.get() == true){
       beltIndexer();
     }
     else if(logi.getRawButtonPressed(2) || logi.getRawButtonPressed(1)){
@@ -223,9 +248,6 @@ public class Robot extends TimedRobot {
     }
     else if(logi.getRawButton(1)){
       launch(2);
-    }
-    else if(logi.getRawButton(7) && logi.getRawButton(3)){
-      belt.set(-0.3);
     }
     else{
       belt.set(0);
@@ -252,7 +274,7 @@ public class Robot extends TimedRobot {
     // System.out.println(controlMultiply);
       
   
-    if(ps4.getRawButton(3)){
+    if(ps4.getRawButton(2)){
       vision.camControl();
     }
     else{

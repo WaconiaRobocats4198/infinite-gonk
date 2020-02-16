@@ -79,9 +79,13 @@ public class Robot extends TimedRobot {
   public static double launchWait;
   public static boolean launchStatus;
 
-  public static boolean ballsOut = false;
   public static boolean ballWasFront = false;
   public static int ballCount;
+  public static boolean ballWasBack = false;
+
+  public static int ballsLeft;
+
+  ballCounter ballsOut = new ballCounter();
 
   // autoBlocks basicallyAI = new autoBlocks();
 
@@ -105,15 +109,15 @@ public class Robot extends TimedRobot {
 
     uSpeedControl.setReference(5400, ControlType.kVelocity);
     lSpeedControl.setReference(5400, ControlType.kVelocity);
-    if(ballWasFront == true && outSensor.get() == false){
-      ballCount++;
-    }
-    ballWasFront = outSensor.get();
     if(System.currentTimeMillis() <= launchCountdown &&
-      launchStatus == true && ballCount < mode){
+      launchStatus == true && ballCount > 0 && mode == 2){
         //beltindexer.set(min, kVelocity)
       
     }
+    else if(System.currentTimeMillis() <= launchCountdown &&
+      launchStatus == true && ballCount > ballsLeft && mode == 2){
+
+      }
   }
 
   public static void beltIndexer(){
@@ -127,6 +131,9 @@ public class Robot extends TimedRobot {
  
   @Override
   public void robotInit() {
+    ballIn.setInverted(true);
+    topLaunch.setInverted(true);
+    bottomLaunch.setInverted(true);
   }
 
   
@@ -143,6 +150,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
+    ballsOut.ballsIn();
     // basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
   }
 
@@ -150,7 +158,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-
+    ballsOut.ballsIn();
     if(logi.getRawButton(3)){
       pitcher.set(logi.getRawAxis(1)*0.5);
     }
@@ -165,18 +173,18 @@ public class Robot extends TimedRobot {
     if(logi.getRawButton(6) && logi.getRawButton(3)){
       belt.set(0.3);
     }
-    else if(inSensor.get()){
+    else if(inSensor.get() == false){
       beltIndexer();
     }
     else if(logi.getRawButtonPressed(2) || logi.getRawButtonPressed(1)){
       launchCountdown = System.currentTimeMillis() + launchWait;
-      ballCount = 0;
+      ballsLeft = ballCount - 1;
     }
     else if(logi.getRawButton(2)){
       launch(1);
     }
     else if(logi.getRawButton(1)){
-      launch(5);
+      launch(2);
     }
     else if(logi.getRawButton(7) && logi.getRawButton(3)){
       belt.set(-0.3);

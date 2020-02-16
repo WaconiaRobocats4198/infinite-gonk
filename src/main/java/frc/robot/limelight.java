@@ -39,12 +39,12 @@ public class limelight{
       NetworkTableEntry pipeline = table.getEntry("pipeline");
 
       ShuffleboardTab Limit = Shuffleboard.getTab("Limit");
-      NetworkTableEntry dashxOff = 
-        Limit.add("xOffset",0.0)
-        .getEntry();
-      NetworkTableEntry dashTarget =
-        Limit.add("Target",false)
-        .getEntry();
+      // NetworkTableEntry dashxOff = 
+      //   Limit.add("xOffset",0.0)
+      //   .getEntry();
+      // NetworkTableEntry dashTarget =
+      //   Limit.add("Target",false)
+      //   .getEntry();
       final double visionSpeed = .666;
       final double turnval = .4;
       public double xTranslate;

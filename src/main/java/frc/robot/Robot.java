@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Solenoid;
 
 import com.ctre.phoenix.motorcontrol.can.*;
@@ -88,17 +89,19 @@ public class Robot extends TimedRobot {
   public static int ballCount;
   public static boolean ballWasBack = false;
 
+  public static SendableChooser autoChoice = new SendableChooser<>();
+  public static int primeAuto = 1;
+  public static int universalAuto = 2;
+  
+
   public static int ballsLeft;
 
   ballCounter ballsOut = new ballCounter();
 
   autoBlocks basicallyAI = new autoBlocks();
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("Auto");
-
-    public NetworkTableEntry maxSpeed =
-          tab.add("Auto", 1)
-          .getEntry();
+  // public ComplexWidget auto =
+  //   tab.add("Auto", autoChoice);
 
   
   double controlMultiply = 1;
@@ -144,6 +147,11 @@ public class Robot extends TimedRobot {
  
   @Override
   public void robotInit() {
+    autoChoice.addOption("6 Ball", primeAuto);
+    autoChoice.addOption("Universal Auto", universalAuto);
+    Shuffleboard.getTab("Preround")
+      .add("Auto Choice", autoChoice)
+      .withWidget(BuiltInWidgets.kComboBoxChooser);
     ballIn.setInverted(true);
     topLaunch.setInverted(true);
     bottomLaunch.setInverted(true);
@@ -164,14 +172,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     ballsOut.ballsIn();
-    basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
+    int finalChoice = (int)autoChoice.getSelected();
+    basicallyAI.fullAuto(finalChoice);
   }
 
 
   
   @Override
   public void teleopPeriodic() {
-    System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
+    // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     if(logi.getRawButton(3)){
       pitcher.set(logi.getRawAxis(1)*0.5);

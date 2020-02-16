@@ -124,14 +124,16 @@ public class Robot extends TimedRobot {
     uSpeedControl.setReference(5400, ControlType.kVelocity);
     lSpeedControl.setReference(5400, ControlType.kVelocity);
     if(System.currentTimeMillis() <= launchCountdown &&
-      launchStatus == true && ballCount > 0 && mode == 2){
+      launchStatus == true && ballCount > 0 && mode == 2
+      && logi.getRawButton(2)){
         //beltindexer.set(min, kVelocity)
         belt.set(0.3);
       
     }
     else if(System.currentTimeMillis() <= launchCountdown &&
-      launchStatus == true && ballCount > ballsLeft && mode == 2){
-
+      launchStatus == true && ballCount > ballsLeft && mode == 2
+      && logi.getRawButton(1)){
+        belt.set(0.3);
       }
   }
 
@@ -193,8 +195,14 @@ public class Robot extends TimedRobot {
       pitcher.set(0);
     }
     
-    if(logi.getRawButton(6) && logi.getRawButton(3)){
-      belt.set(0.3);
+    if(logi.getRawButton(3)){
+      if(logi.getRawButton(6)){
+        belt.set(0.3);
+      }
+      if(logi.getRawButton(1)){
+        topLaunch.set(1);
+        bottomLaunch.set(1)
+      }
     }
     else if(inSensor.get() == false){
       beltIndexer();
@@ -214,6 +222,8 @@ public class Robot extends TimedRobot {
     }
     else{
       belt.set(0);
+      topLaunch.set(0);
+      bottomLaunch.set(0);
     }
 
 

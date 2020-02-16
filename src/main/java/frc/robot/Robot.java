@@ -237,7 +237,7 @@ public class Robot extends TimedRobot {
       ballIn.set(0);
     }
 
-    if(ps4.getRawButtonReleased(1) ){
+    if(ps4.getRawButtonReleased(3)){
       // System.out.println("SHOULD BE FLIPPING");
       controlMultiply = controlMultiply * (-1);
     }    

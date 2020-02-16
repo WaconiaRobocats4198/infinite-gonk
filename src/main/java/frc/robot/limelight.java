@@ -88,7 +88,7 @@ public class limelight{
 
     }
     public double offsetCalculator(){
-      double inchOffRobot = 4.25;
+      double inchOffRobot = 8.5;
       double offset = Math.atan(inchOffRobot/rangeFinder()); 
       
       offset = (offset * 180)/Math.PI;
@@ -97,9 +97,9 @@ public class limelight{
     
     public double rangeFinder(){
       if(trueTarget == true){
-        double heightFloor = 24;
-        double llOffset = 6;
-        double llAngle = 18.75;
+        double heightFloor = 23.25;
+        double llOffset = 8.5;
+        double llAngle = 30;
         double targetHeight = 8.1875;
 
         double yOff = ty.getDouble(0.0);

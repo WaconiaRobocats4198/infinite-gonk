@@ -38,7 +38,6 @@ public class limelight{
       NetworkTableEntry stream = table.getEntry("stream");
       NetworkTableEntry pipeline = table.getEntry("pipeline");
 
-      ShuffleboardTab Limit = Shuffleboard.getTab("Limit");
       // NetworkTableEntry dashxOff = 
       //   Limit.add("xOffset",0.0)
       //   .getEntry();
@@ -49,7 +48,7 @@ public class limelight{
       final double turnval = .4;
       public double xTranslate;
       public double yTranslate;
-      public double yOffLimit;
+      public double yOffLimit = -509;
 
       double distance;
 

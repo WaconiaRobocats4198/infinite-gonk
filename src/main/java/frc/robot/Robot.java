@@ -62,11 +62,11 @@ public class Robot extends TimedRobot {
   
   public static MecanumDrive scoot = new MecanumDrive(frontL, backL, frontR, backR);
 
-  public static AnalogInput zero = new AnalogInput(0);
+  public static DigitalInput zero = new DigitalInput(3);
 
   limelight vision = new limelight();
 
-  colorParse colorWheel = new colorParse();
+  // colorParse colorWheel = new colorParse();
 
   launchAngler sniper = new launchAngler();
 
@@ -92,6 +92,9 @@ public class Robot extends TimedRobot {
   public static SendableChooser autoChoice = new SendableChooser<>();
   public static int primeAuto = 1;
   public static int universalAuto = 2;
+
+  public static double actualEnc;
+  public static double encOffset;
   
 
   public static int ballsLeft;
@@ -182,6 +185,10 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
+    if(zero.get()){
+      pitchEnc.setPosition(0);
+    }
+    System.out.println(vision.rangeFinder());
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     if(logi.getRawButton(3)){
@@ -252,12 +259,12 @@ public class Robot extends TimedRobot {
       scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);
     }
-    if(ps4.getRawButton(4)){
-      colorWheel.ColorControl(4);
-    }
-    if(ps4.getRawButton(5)){
-      colorWheel.ColorControl(5);
-    }
+    // if(ps4.getRawButton(4)){
+    //   colorWheel.ColorControl(4);
+    // }
+    // if(ps4.getRawButton(5)){
+    //   colorWheel.ColorControl(5);
+    // }
     
   }
 

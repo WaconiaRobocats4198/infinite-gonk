@@ -56,17 +56,17 @@ public class limelight{
 
       public int isTarget;
     public void camControl(){
+      isTarget = (int)tv.getDouble(0);
         xTranslate = tx.getDouble(0.0);
-        yTranslate = ty.getDouble(0.0);
-        isTarget = (int)tv.getDouble(0.0);
-        if(yTranslate <= yOffLimit && isTarget != 0){
-          trueTarget = false;
-        }
-        else{
+        yTranslate = ty.getDouble(0);
+        // if(yTranslate <= yOffLimit && isTarget != 0){
+        //   trueTarget = false;
+        // }
+        // else{
           trueTarget = true;
-        }
+        // }
         if(trueTarget == true){
-          System.out.println(xTranslate);
+          System.out.println(offsetCalculator());
             if(xTranslate <= offsetCalculator() - 1){
                 System.out.println(-0.4*Math.pow(-xTranslate/54, 0.5));
                 Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1),-0.4*Math.pow(-xTranslate/54, 0.5));
@@ -95,17 +95,20 @@ public class limelight{
     }
     
     public double rangeFinder(){
-      if(trueTarget == true){
-        double heightFloor = 23.25;
-        double llOffset = 8.5;
-        double llAngle = 30;
-        double targetHeight = 8.1875;
+      isTarget = (int)tv.getDouble(0);
+      double heightFloor = 23.25;
+      double llOffset = 8.5;
+      double llAngle = 30;
+      double targetHeight = 84.25;
 
-        double yOff = ty.getDouble(0.0);
-        double xOff = tx.getDouble(0.0);
-
-        distance = (targetHeight-heightFloor)/Math.tan((yOff + llAngle) * (Math.PI *2)/360);
-        distance = distance - llOffset * Math.sin((Math.abs(xOff) * 2*Math.PI)/360);
+      double yOff = ty.getDouble(0.0);
+      double xOff = tx.getDouble(0.0);
+      // System.out.println(yOff + llAngle);
+      System.out.println(isTarget);
+      if (isTarget != 0){
+        // System.out.println("TARGET ACQUIRED");
+        distance = (targetHeight-heightFloor)/Math.tan((yOff + llAngle) * ((2 * Math.PI)/360));
+        distance = distance - llOffset * Math.cos((90-Math.abs(xOff)) * ((2 * Math.PI)/360));
       }
       else{
         distance = -1;

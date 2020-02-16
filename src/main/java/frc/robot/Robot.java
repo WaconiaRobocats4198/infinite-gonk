@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
 
   public static CANSparkMax frontL = new CANSparkMax(1, MotorType.kBrushless);
   public static CANSparkMax frontR = new CANSparkMax(2, MotorType.kBrushless);
-  public static CANSparkMax backL = new CANSparkMax(11, MotorType.kBrushless);
-  public static CANSparkMax backR = new CANSparkMax(12, MotorType.kBrushless);
+  public static CANSparkMax backL = new CANSparkMax(12, MotorType.kBrushless);
+  public static CANSparkMax backR = new CANSparkMax(11, MotorType.kBrushless);
   public static CANSparkMax pitcher = new CANSparkMax(10, MotorType.kBrushless);
   public static CANSparkMax belt = new CANSparkMax(5, MotorType.kBrushless);
   public static CANSparkMax topLaunch = new CANSparkMax(6, MotorType.kBrushless);
@@ -188,7 +188,7 @@ public class Robot extends TimedRobot {
     if(zero.get()){
       pitchEnc.setPosition(0);
     }
-    System.out.println(vision.rangeFinder());
+    System.out.println(vision.rangeFinder() + " range");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     if(logi.getRawButton(3)){

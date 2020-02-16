@@ -11,6 +11,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.revrobotics.CANSparkMax;
@@ -87,7 +92,13 @@ public class Robot extends TimedRobot {
 
   ballCounter ballsOut = new ballCounter();
 
-  // autoBlocks basicallyAI = new autoBlocks();
+  autoBlocks basicallyAI = new autoBlocks();
+
+  private ShuffleboardTab tab = Shuffleboard.getTab("Auto");
+
+    public NetworkTableEntry maxSpeed =
+          tab.add("Auto", 1)
+          .getEntry();
 
   
   double controlMultiply = 1;
@@ -112,6 +123,7 @@ public class Robot extends TimedRobot {
     if(System.currentTimeMillis() <= launchCountdown &&
       launchStatus == true && ballCount > 0 && mode == 2){
         //beltindexer.set(min, kVelocity)
+        belt.set(0.3);
       
     }
     else if(System.currentTimeMillis() <= launchCountdown &&
@@ -122,7 +134,8 @@ public class Robot extends TimedRobot {
 
   public static void beltIndexer(){
     if(inSensor.get()){
-      //beltDrive.setReference(400, kVelocity)
+      // beltDrive.setReference(400, kVelocity)
+      belt.set(0.3);
     }
     else{
       belt.set(0);
@@ -151,13 +164,14 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     ballsOut.ballsIn();
-    // basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
+    basicallyAI.fullAuto((int)SmartDashboard.getNumber("StartingSpot", 1));
   }
 
 
   
   @Override
   public void teleopPeriodic() {
+    System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     if(logi.getRawButton(3)){
       pitcher.set(logi.getRawAxis(1)*0.5);

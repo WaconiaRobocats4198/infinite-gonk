@@ -227,8 +227,8 @@ public class Robot extends TimedRobot {
         belt.set(0);
       }
       if(logi.getRawButton(1)){
-        topLaunch.set(1);
-        bottomLaunch.set(1);
+        topLaunch.set(0.2);
+        bottomLaunch.set(0.2);
       }
       else{
         topLaunch.set(0);

@@ -146,17 +146,6 @@ public class Robot extends TimedRobot {
     if(inSensor.get()){
       // beltDrive.setReference(400, kVelocity)
       currentPos = beltEnc.getPosition() + 0.5;
-      belt.set(0.3);
-    }
-    else{
-      if(ballCount < 5){
-        if(beltEnc.getPosition() < currentPos){
-          belt.set(0.3);
-        }
-        else{
-          belt.set(0);
-        }
-      }
     }
   }
  
@@ -245,7 +234,12 @@ public class Robot extends TimedRobot {
       launch(2);
     }
     else{
-      beltIndexer();
+      if(beltEnc.getPosition() < currentPos){
+        belt.set(0.3);
+      }
+      else{
+        belt.set(0);
+      }
       topLaunch.set(0);
       bottomLaunch.set(0);
     }

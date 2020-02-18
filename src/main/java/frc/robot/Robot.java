@@ -196,6 +196,7 @@ public class Robot extends TimedRobot {
     // System.out.println(vision.rangeFinder() + " range");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
+    beltIndexer();
     System.out.println(outSensor.get() + " out, was " + ballWasFront);
     System.out.println(ballCount);
     pitcherPID.setP(1e-5);

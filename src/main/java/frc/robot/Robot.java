@@ -56,13 +56,14 @@ public class Robot extends TimedRobot {
   public static CANPIDController pitcherPID = new CANPIDController(pitcher);
   public static CANPIDController uSpeedControl = new CANPIDController(bottomLaunch);
   public static CANPIDController lSpeedControl = new CANPIDController(topLaunch);
+  public static CANPIDController beltPID = new CANPIDController(belt);
 
   public static DigitalInput inSensor = new DigitalInput(0);
   public static DigitalInput outSensor = new DigitalInput(1);
   
   public static MecanumDrive scoot = new MecanumDrive(frontL, backL, frontR, backR);
 
-  public static DigitalInput zero = new DigitalInput(3);
+  public static AnalogInput zero = new AnalogInput(0);
 
   limelight vision = new limelight();
 
@@ -86,7 +87,7 @@ public class Robot extends TimedRobot {
   public static boolean launchStatus;
 
   public static boolean ballWasFront = false;
-  public static int ballCount;
+  public static int ballCount = 0;
   public static boolean ballWasBack = false;
 
   public static SendableChooser autoChoice = new SendableChooser<>();
@@ -96,6 +97,7 @@ public class Robot extends TimedRobot {
   public static double actualEnc;
   public static double encOffset;
   
+  public static double currentPos;
 
   public static int ballsLeft;
 
@@ -124,8 +126,8 @@ public class Robot extends TimedRobot {
     lSpeedControl.setFF(kFF);
     lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
 
-    uSpeedControl.setReference(5400, ControlType.kVelocity);
-    lSpeedControl.setReference(5400, ControlType.kVelocity);
+    uSpeedControl.setReference(5200, ControlType.kVelocity);
+    lSpeedControl.setReference(5200, ControlType.kVelocity);
     if(System.currentTimeMillis() <= launchCountdown &&
       launchStatus == true && ballCount > 0 && mode == 2
       && logi.getRawButton(2)){
@@ -143,10 +145,18 @@ public class Robot extends TimedRobot {
   public static void beltIndexer(){
     if(inSensor.get()){
       // beltDrive.setReference(400, kVelocity)
+      currentPos = beltEnc.getPosition() + 0.5;
       belt.set(0.3);
     }
     else{
-      belt.set(0);
+      if(ballCount < 5){
+        if(beltEnc.getPosition() < currentPos){
+          belt.set(0.3);
+        }
+        else{
+          belt.set(0);
+        }
+      }
     }
   }
  
@@ -162,6 +172,7 @@ public class Robot extends TimedRobot {
     bottomLaunch.setInverted(true);
     belt.setInverted(true);
     pitcher.setInverted(true);
+    currentPos = beltEnc.getPosition();
   }
 
   
@@ -187,34 +198,21 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-    System.out.println(logi.getRawAxis(0));
+    // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
-    // System.out.println(zero.get());
+    // System.out.println(zero.getVoltage());
     // if(zero.get()){
     //   pitchEnc.setPosition(0);
     // }
     // System.out.println(vision.rangeFinder() + " range");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
+    System.out.println(outSensor.get() + " out, was " + ballWasFront);
+    System.out.println(ballCount);
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
-    if(logi.getRawButton(3)){
-      if(ps4.getRawButton(2)){
-        sniper.tip();
-      }
-      else{
-        if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
-          pitcherPID.setReference(0, ControlType.kVelocity);
-        }
-        else{
-          pitcher.set(logi.getRawAxis(0)*0.25);
-        }
-      }
-    }
 
-    else{
-      pitcherPID.setReference(0, ControlType.kVelocity);
-    }
+        
     
     if(logi.getRawButton(3)){
       if(logi.getRawButton(6)){
@@ -236,9 +234,6 @@ public class Robot extends TimedRobot {
       }
       
     }
-    else if(inSensor.get() == true){
-      beltIndexer();
-    }
     else if(logi.getRawButtonPressed(2) || logi.getRawButtonPressed(1)){
       launchCountdown = System.currentTimeMillis() + launchWait;
       ballsLeft = ballCount - 1;
@@ -250,7 +245,7 @@ public class Robot extends TimedRobot {
       launch(2);
     }
     else{
-      belt.set(0);
+      beltIndexer();
       topLaunch.set(0);
       bottomLaunch.set(0);
     }
@@ -276,8 +271,15 @@ public class Robot extends TimedRobot {
   
     if(ps4.getRawButton(2)){
       vision.camControl();
+      sniper.tip();
     }
     else{
+      if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
+        pitcherPID.setReference(0, ControlType.kVelocity);
+      }
+      else{
+        pitcher.set(logi.getRawAxis(0)*0.25);
+      }
       scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);
     }

@@ -211,11 +211,13 @@ public class Robot extends TimedRobot {
     ballsOut.ballsIn();
     beltIndexer();
     // System.out.println(outSensor.get() + " out, was " + ballWasFront);
-    System.out.println(ballCount);
+    // System.out.println(ballCount);
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
     
-        
+    if (logi.getRawButton(11)) {
+      basicallyAi.fullAuto(3);
+    }
     
     if(logi.getRawButton(3)){
       if(logi.getRawButton(6)){

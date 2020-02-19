@@ -12,11 +12,11 @@ package frc.robot;
 
 public class autoBlocks {
     limelight autoLime = new limelight();
-
+    boolean moveOn;
     launchAngler launcheyBoi = new launchAngler();
     public void straight(double inches){
         double startPos = Robot.flEnc.getPosition();
-        double encTicks = distaneToEnc(inches);
+        double encTicks = distanceToEnc(inches);
 
         if(Robot.flEnc.getPosition() <  startPos + encTicks){
             Robot.scoot.driveCartesian(0, 1, 0);

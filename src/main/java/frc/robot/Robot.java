@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   
   public static MecanumDrive scoot = new MecanumDrive(frontL, backL, frontR, backR);
 
-  public static AnalogInput zero = new AnalogInput(0);
+  public static DigitalInput zero = new DigitalInput(2);
 
   limelight vision = new limelight();
 
@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
 
   public static double launchCountdown;
   public static double launchWait;
-  public static boolean launchStatus;
+  public static boolean launchStatus = true;
 
   public static boolean ballWasFront = false;
   public static int ballCount = 0;
@@ -125,27 +125,34 @@ public class Robot extends TimedRobot {
     lSpeedControl.setIZone(kIz);
     lSpeedControl.setFF(kFF);
     lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
-
-    uSpeedControl.setReference(5200, ControlType.kVelocity);
-    lSpeedControl.setReference(5200, ControlType.kVelocity);
-    if(System.currentTimeMillis() <= launchCountdown &&
-      launchStatus == true && ballCount > 0 && mode == 2
-      && logi.getRawButton(2)){
-        //beltindexer.set(min, kVelocity)
-        belt.set(0.3);
-      
-    }
-    else if(System.currentTimeMillis() <= launchCountdown &&
-      launchStatus == true && ballCount > ballsLeft && mode == 2
-      && logi.getRawButton(1)){
+    System.out.println(ballCount>ballsLeft);
+    if(ballCount > ballsLeft){
+      uSpeedControl.setReference(5200, ControlType.kVelocity);
+      lSpeedControl.setReference(5200, ControlType.kVelocity);
+      if(System.currentTimeMillis() >= launchCountdown &&
+        launchStatus == true && mode == 2
+        && logi.getRawButton(1)){
+          //beltindexer.set(min, kVelocity)
+          belt.set(0.3);
+        
+      }
+      else if(System.currentTimeMillis() >= launchCountdown &&
+          launchStatus == true && ballCount > ballsLeft && mode == 1
+          && logi.getRawButton(2)){
         belt.set(0.3);
       }
+    }
+    else{
+      topLaunch.set(0);
+      bottomLaunch.set(0);
+      belt.set(0);
+    }
   }
 
   public static void beltIndexer(){
     if(inSensor.get()){
       // beltDrive.setReference(400, kVelocity)
-      currentPos = beltEnc.getPosition() + 0.5;
+      currentPos = beltEnc.getPosition() + 0.01;
     }
   }
  
@@ -189,19 +196,20 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
-    // System.out.println(zero.getVoltage());
-    // if(zero.get()){
-    //   pitchEnc.setPosition(0);
-    // }
+    // System.out.println(inSensor.get());
+    if(zero.get()){
+      pitchEnc.setPosition(0);
+    }
+    // System.out.println(pitchEnc.getPosition());
     // System.out.println(vision.rangeFinder() + " range");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     beltIndexer();
-    System.out.println(outSensor.get() + " out, was " + ballWasFront);
+    // System.out.println(outSensor.get() + " out, was " + ballWasFront);
     System.out.println(ballCount);
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
-
+    
         
     
     if(logi.getRawButton(3)){
@@ -224,9 +232,13 @@ public class Robot extends TimedRobot {
       }
       
     }
-    else if(logi.getRawButtonPressed(2) || logi.getRawButtonPressed(1)){
+    else if(logi.getRawButtonPressed(2)){
       launchCountdown = System.currentTimeMillis() + launchWait;
       ballsLeft = ballCount - 1;
+    }
+    else if(logi.getRawButtonPressed(1)){
+      launchCountdown = System.currentTimeMillis() + launchWait;
+      ballsLeft = 0;
     }
     else if(logi.getRawButton(2)){
       launch(1);
@@ -236,7 +248,7 @@ public class Robot extends TimedRobot {
     }
     else{
       if(beltEnc.getPosition() < currentPos){
-        belt.set(0.3);
+        belt.set(0.2);
       }
       else{
         belt.set(0);
@@ -269,7 +281,11 @@ public class Robot extends TimedRobot {
       sniper.tip();
     }
     else{
-      if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
+      if(logi.getRawButton(10)){
+        pitcherPID.setI(1e-5);
+        pitcherPID.setReference(0, ControlType.kPosition);
+      }
+      else if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
         pitcherPID.setReference(0, ControlType.kVelocity);
       }
       else{

@@ -9,7 +9,7 @@ public class ballCounter {
         }
         Robot.ballWasFront = Robot.outSensor.get();
         if(Robot.ballWasBack == true && Robot.inSensor.get() == false 
-        && Robot.ballIn.getAppliedOutput() != 0){
+        && Robot.logi.getRawButton(8)){
             Robot.ballCount++;
         }
         Robot.ballWasBack = Robot.inSensor.get();

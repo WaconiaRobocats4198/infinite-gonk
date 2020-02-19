@@ -127,8 +127,8 @@ public class Robot extends TimedRobot {
     lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
     System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft){
-      uSpeedControl.setReference(5200, ControlType.kVelocity);
-      lSpeedControl.setReference(5200, ControlType.kVelocity);
+      uSpeedControl.setReference(3000, ControlType.kVelocity);
+      lSpeedControl.setReference(3000, ControlType.kVelocity);
       if(System.currentTimeMillis() >= launchCountdown &&
         launchStatus == true && mode == 2
         && logi.getRawButton(1)){
@@ -152,7 +152,12 @@ public class Robot extends TimedRobot {
   public static void beltIndexer(){
     if(inSensor.get()){
       // beltDrive.setReference(400, kVelocity)
-      currentPos = beltEnc.getPosition() + 0.01;
+      if(ballCount < 4){
+        currentPos = beltEnc.getPosition() + 0.01;
+      }
+      else{
+        currentPos = beltEnc.getPosition() + 0.0001;
+      }
     }
   }
  
@@ -248,7 +253,7 @@ public class Robot extends TimedRobot {
     }
     else{
       if(beltEnc.getPosition() < currentPos){
-        belt.set(0.2);
+        belt.set(0.25);
       }
       else{
         belt.set(0);
@@ -282,10 +287,17 @@ public class Robot extends TimedRobot {
     }
     else{
       if(logi.getRawButton(10)){
-        pitcherPID.setI(1e-5);
-        pitcherPID.setReference(0, ControlType.kPosition);
+        if(pitchEnc.getPosition() > 1){
+          pitcher.set(-0.25);
+        }
+        else if(pitchEnc.getPosition() < -1){
+          pitcher.set(0.25);
+        }
+        else{
+          pitcher.set((-.25*pitchEnc.getPosition()));
+        }
       }
-      else if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
+      else if(logi.getRawAxis(0)  < 0.05 && logi.getRawAxis(0) > -0.05){
         pitcherPID.setReference(0, ControlType.kVelocity);
       }
       else{

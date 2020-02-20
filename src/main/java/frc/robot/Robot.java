@@ -85,6 +85,15 @@ public class Robot extends TimedRobot {
   public static double kMinOutput = -1;
   public static double maxRPM = 5700;
 
+  public static double driveP = 1e-3; 
+  public static double driveI = 3e-4;
+  public static double driveD = 0; 
+  public static double driveIz = 0; 
+  public static double driveFF = 0; 
+  public static double driveMaxOutput = 1; 
+  public static double driveMinOutput = -1;
+  public static double diveRPM = 5700;
+
   public static double pAdjust = -4;
 
   public static double launchCountdown;

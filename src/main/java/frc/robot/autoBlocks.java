@@ -40,7 +40,7 @@ public class autoBlocks {
             leftEnc = Robot.flEnc.getPosition() + distanceToEnc(outerDistance) * (degrees/360);
             rightEnc = Robot.frEnc.getPosition() + distanceToEnc(innerDistance) * (degrees/360);
             sideSpeed = true;
-            multiple = 1;
+            multiple = -1;
         }
         else if(direction == "left"){
             // System.out.println("lefty");
@@ -48,11 +48,11 @@ public class autoBlocks {
             leftEnc = (Robot.flEnc.getPosition() + (innerDistance) * (degrees/360));
             System.out.println(rightEnc + " right, " + leftEnc + " left");
             sideSpeed = false;
-            multiple = -1;
+            multiple = 1;
         }
         System.out.println(speedRatio);
         System.out.println(rightEnc);
-        while(Robot.flEnc.getPosition() > multiple * leftEnc || Robot.frEnc.getPosition() < -1* multiple * rightEnc){
+        while(Robot.flEnc.getPosition() < -multiple * leftEnc || Robot.frEnc.getPosition() < multiple * rightEnc){
             // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
             if(sideSpeed == false){
                 Robot.flPID.setReference(-2000*speedRatio, ControlType.kVelocity);

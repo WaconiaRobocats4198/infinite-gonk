@@ -53,6 +53,11 @@ public class Robot extends TimedRobot {
   public static CANEncoder topLaunchEnc = new CANEncoder(topLaunch);
   public static CANEncoder botLaunchEnc = new CANEncoder(bottomLaunch);
 
+
+  public static CANPIDController frPID = new CANPIDController(frontR);
+  public static CANPIDController flPID = new CANPIDController(frontL);
+  public static CANPIDController brPID = new CANPIDController(backR);
+  public static CANPIDController blPID = new CANPIDController(backL);
   public static CANPIDController pitcherPID = new CANPIDController(pitcher);
   public static CANPIDController uSpeedControl = new CANPIDController(bottomLaunch);
   public static CANPIDController lSpeedControl = new CANPIDController(topLaunch);
@@ -125,6 +130,8 @@ public class Robot extends TimedRobot {
     lSpeedControl.setIZone(kIz);
     lSpeedControl.setFF(kFF);
     lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
+
+
     System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft){
       uSpeedControl.setReference(3000, ControlType.kVelocity);
@@ -174,6 +181,40 @@ public class Robot extends TimedRobot {
     belt.setInverted(true);
     pitcher.setInverted(true);
     currentPos = beltEnc.getPosition();
+    basicallyAI.moveOn = 0;
+    frEnc.setPosition(0);
+    flEnc.setPosition(0);
+    blEnc.setPosition(0);
+    brEnc.setPosition(0);
+    
+    frPID.setP(kP);
+    frPID.setI(kI);
+    frPID.setD(kD);
+    frPID.setIZone(kIz);
+    frPID.setFF(kFF);
+    frPID.setOutputRange(kMinOutput, kMaxOutput);
+
+    brPID.setP(kP);
+    brPID.setI(kI);
+    brPID.setD(kD);
+    brPID.setIZone(kIz);
+    brPID.setFF(kFF);
+    brPID.setOutputRange(kMinOutput, kMaxOutput);
+
+    flPID.setP(kP);
+    flPID.setI(kI);
+    flPID.setD(kD);
+    flPID.setIZone(kIz);
+    flPID.setFF(kFF);
+    flPID.setOutputRange(kMinOutput, kMaxOutput);
+
+    blPID.setP(kP);
+    blPID.setI(kI);
+    blPID.setD(kD);
+    blPID.setIZone(kIz);
+    blPID.setFF(kFF);
+    blPID.setOutputRange(kMinOutput, kMaxOutput);
+
   }
 
   
@@ -215,8 +256,8 @@ public class Robot extends TimedRobot {
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
     
-    if (logi.getRawButton(11)) {
-      basicallyAi.fullAuto(3);
+    if (logi.getRawButtonPressed(11)) {
+      basicallyAI.fullAuto(3);
     }
     
     if(logi.getRawButton(3)){

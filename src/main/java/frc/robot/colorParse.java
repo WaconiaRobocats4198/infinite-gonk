@@ -1,7 +1,11 @@
 // package frc.robot;
 
 // import com.revrobotics.ColorSensorV3;
-
+// import com.revrobotics.CANEncoder;
+// import com.revrobotics.CanSparkMax;
+// import com.revrobotics.ControlType;
+// Import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+// com.revrobotics.CANPIDController;
 // import edu.wpi.first.wpilibj.I2C;
 // import edu.wpi.first.wpilibj.I2C.Port;
 
@@ -105,4 +109,8 @@
 //             return 0;
 //         }
 //     }
+//     static void spinmotor(){
+//     
+//      
+//  }
 // }

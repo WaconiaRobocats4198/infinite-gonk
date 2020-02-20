@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   public static CANSparkMax belt = new CANSparkMax(5, MotorType.kBrushless);
   public static CANSparkMax topLaunch = new CANSparkMax(6, MotorType.kBrushless);
   public static CANSparkMax bottomLaunch = new CANSparkMax(7, MotorType.kBrushless);
-  // public static CANSparkMax climber = new CANSparkMax(9, MotorType.kBrushless);
+  public static CANSparkMax climber = new CANSparkMax(9, MotorType.kBrushless);
   public static CANSparkMax ballIn = new CANSparkMax(4, MotorType.kBrushed);
   public static CANSparkMax climbWinch = new CANSparkMax(3, MotorType.kBrushless);
   // public static CANSparkMax backR = new CANSparkMax(4, MotorType.kBrushless);

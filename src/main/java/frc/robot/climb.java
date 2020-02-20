@@ -19,6 +19,12 @@ public class climb{
     }
 
     static void winch(){
+    /*public static CANSparkMax winch = new CANSparkMax(n, MotorType.kBrushless);
+      public static CANEncoder wincEnc = new CANEncoder(winch);
+      
+        if(wincEnc.getPosition() < tbdn){
+            Robot.winch.set(0.3);
+        }*/
 
     }
 

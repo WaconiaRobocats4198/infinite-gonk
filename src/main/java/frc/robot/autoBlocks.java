@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.revrobotics.ControlType;
+
 // import edu.wpi.first.wpilibj.drive.MecanumDrive;
 // import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 // import com.revrobotics.CANSparkMax;
@@ -12,59 +14,68 @@ package frc.robot;
 
 public class autoBlocks {
     limelight autoLime = new limelight();
-    boolean moveOn;
+    int moveOn;
     launchAngler launcheyBoi = new launchAngler();
     public void straight(double inches){
         double startPos = Robot.flEnc.getPosition();
         double encTicks = distanceToEnc(inches);
 
-        if(Robot.flEnc.getPosition() <  startPos + encTicks){
+        while(Robot.flEnc.getPosition() <  startPos + encTicks){
             Robot.scoot.driveCartesian(0, 1, 0);
         }
-        else{
-            Robot.scoot.driveCartesian(0, 0, 0);
-        }
+        Robot.scoot.driveCartesian(0, 0, 0);
     }
     public void arc(double degrees, double radius, String direction){
+        System.out.println(degrees/360);
         double outerDistance = (radius + 9.75) * 2 * Math.PI;
+        // System.out.println(outerDistance/(8*Math.PI) * 12.75);
         double innerDistance = (radius - 9.75) * 2 * Math.PI;
-
+        
+        double proportion = degrees/360;
         double speedRatio = innerDistance/outerDistance;
         double leftEnc = 0;
         double rightEnc = 0;
         boolean sideSpeed = true;
-
+        int multiple = 1;
+        
+        System.out.println(distanceToEnc(outerDistance) * proportion + " outer rotations");
+        System.out.println(Robot.frEnc.getPosition());
         if (direction == "right"){
-            leftEnc = Robot.flEnc.getPosition() + distaneToEnc(outerDistance) * (degrees/360);
-            rightEnc = Robot.frEnc.getPosition() + distaneToEnc(innerDistance) * (degrees/360);
+            leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(outerDistance) * proportion);
+            rightEnc = Robot.frEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
             sideSpeed = true;
+            multiple = -1;
         }
         else if(direction == "left"){
-            rightEnc = Robot.frEnc.getPosition() + (outerDistance) * (degrees/360);
-            leftEnc = Robot.flEnc.getPosition() + (innerDistance) * (degrees/360);
+            // System.out.println("lefty");
+            rightEnc = -(Robot.frEnc.getPosition() + (distanceToEnc(outerDistance) * proportion));
+            leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
+            // System.out.println(rightEnc + " right, " + leftEnc + " left");
             sideSpeed = false;
+            multiple = 1;
         }
-
-        if(Robot.flEnc.getPosition() < leftEnc){
-            if(sideSpeed == true){
-                Robot.frontL.set(1);
-                Robot.backL.set(1);
-            }
-            else{
-                Robot.frontL.set(speedRatio);
-                Robot.backL.set(speedRatio);
-            }
-        }
-        if(Robot.frEnc.getPosition() < rightEnc){
+        // System.out.println(speedRatio);
+        while(Math.abs(Robot.flEnc.getPosition() - leftEnc) >= 0.5 ||
+         Math.abs(Robot.frEnc.getPosition() - rightEnc) >= 0.5){
+            // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
+            System.out.println(Robot.flEnc.getVelocity()/Robot.frEnc.getVelocity());
             if(sideSpeed == false){
-                Robot.frontR.set(1);
-                Robot.backR.set(1);
+                Robot.flPID.setReference(3000*speedRatio, ControlType.kVelocity);
+                Robot.blPID.setReference(3000*speedRatio, ControlType.kVelocity);
+                Robot.frPID.setReference(-3000, ControlType.kVelocity);
+                Robot.brPID.setReference(-3000, ControlType.kVelocity);
             }
             else{
-                Robot.frontR.set(speedRatio);
-                Robot.backR.set(speedRatio);
+                Robot.flPID.setReference(3000, ControlType.kVelocity);
+                Robot.blPID.setReference(3000, ControlType.kVelocity);
+                Robot.frPID.setReference(-3000*speedRatio, ControlType.kVelocity);
+                Robot.brPID.setReference(-3000*speedRatio, ControlType.kVelocity);
             }
         }
+        Robot.frontL.set(0);
+        Robot.frontR.set(0);
+        Robot.backL.set(0);
+        Robot.backR.set(0);
 
     }
     public void fullAuto(int position){
@@ -80,7 +91,7 @@ public class autoBlocks {
             launcheyBoi.tip();
             straight(-200);
         }
-        if(position == 2){
+        else if(position == 2){
             straight(-35);
             if(autoLime.xTranslate > 1 || autoLime.xTranslate < -1){
                 Robot.scoot.driveCartesian(0, 1, 0);
@@ -91,6 +102,10 @@ public class autoBlocks {
             launcheyBoi.innerSet();
             straight(-200);
         }
+        else if(position == 3){
+            System.out.println("attempting");
+            arc(90, 24, "left");
+        }
     }
     public void autoCam(){
         if(autoLime.xTranslate > 0){
@@ -100,10 +115,9 @@ public class autoBlocks {
             
         }
     }
-    public double distaneToEnc(double distance){
+    public double distanceToEnc(double distance){
         double encCount;
-        double rotations =distance/(8 * Math.PI);
-       
+        double rotations = (distance/(8*Math.PI))*12.75;
         return rotations;
     }
 

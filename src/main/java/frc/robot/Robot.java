@@ -240,6 +240,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
+    // frontR.set(0.2);
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
     // System.out.println(inSensor.get());

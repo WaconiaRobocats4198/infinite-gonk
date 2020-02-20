@@ -26,8 +26,9 @@ public class autoBlocks {
         Robot.scoot.driveCartesian(0, 0, 0);
     }
     public void arc(double degrees, double radius, String direction){
-        System.out.println("calculating arc");
+        System.out.println(degrees/360);
         double outerDistance = (radius + 9.75) * 2 * Math.PI;
+        // System.out.println(outerDistance/(8*Math.PI) * 12.75);
         double innerDistance = (radius - 9.75) * 2 * Math.PI;
 
         double speedRatio = innerDistance/outerDistance;
@@ -37,34 +38,36 @@ public class autoBlocks {
         int multiple = 1;
 
         if (direction == "right"){
-            leftEnc = Robot.flEnc.getPosition() + distanceToEnc(outerDistance) * (degrees/360);
-            rightEnc = Robot.frEnc.getPosition() + distanceToEnc(innerDistance) * (degrees/360);
+            leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(outerDistance) * (degrees/360));
+            rightEnc = Robot.frEnc.getPosition() + (distanceToEnc(innerDistance) * (degrees/360));
             sideSpeed = true;
             multiple = -1;
         }
         else if(direction == "left"){
             // System.out.println("lefty");
-            rightEnc = (Robot.frEnc.getPosition() + (outerDistance) * (degrees/360));
-            leftEnc = (Robot.flEnc.getPosition() + (innerDistance) * (degrees/360));
-            System.out.println(rightEnc + " right, " + leftEnc + " left");
+            rightEnc = -(Robot.frEnc.getPosition() + (outerDistance * (degrees/360)));
+            leftEnc = Robot.flEnc.getPosition() + (innerDistance * (degrees/360));
+            // System.out.println(rightEnc + " right, " + leftEnc + " left");
             sideSpeed = false;
             multiple = 1;
         }
-        System.out.println(speedRatio);
+        // System.out.println(speedRatio);
         System.out.println(rightEnc);
-        while(Robot.flEnc.getPosition() != leftEnc || Robot.frEnc.getPosition() != rightEnc){
+        while(Math.abs(Robot.flEnc.getPosition() - leftEnc) >= 0.5 ||
+         Math.abs(Robot.frEnc.getPosition() - rightEnc) >= 0.5){
             // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
+            // System.out.println(rightEnc + " target right " + leftEnc + " target left");
             if(sideSpeed == false){
-                Robot.flPID.setReference(-2000*speedRatio, ControlType.kVelocity);
-                Robot.blPID.setReference(-2000*speedRatio, ControlType.kVelocity);
-                Robot.frPID.setReference(-2000, ControlType.kVelocity);
-                Robot.brPID.setReference(-2000, ControlType.kVelocity);
+                Robot.flPID.setReference(3000*speedRatio, ControlType.kVelocity);
+                Robot.blPID.setReference(3000*speedRatio, ControlType.kVelocity);
+                Robot.frPID.setReference(-3000, ControlType.kVelocity);
+                Robot.brPID.setReference(-3000, ControlType.kVelocity);
             }
             else{
-                Robot.flPID.setReference(-2000, ControlType.kVelocity);
-                Robot.blPID.setReference(-2000, ControlType.kVelocity);
-                Robot.frPID.setReference(-2000*speedRatio, ControlType.kVelocity);
-                Robot.brPID.setReference(-2000*speedRatio, ControlType.kVelocity);
+                Robot.flPID.setReference(3000, ControlType.kVelocity);
+                Robot.blPID.setReference(3000, ControlType.kVelocity);
+                Robot.frPID.setReference(-3000*speedRatio, ControlType.kVelocity);
+                Robot.brPID.setReference(-3000*speedRatio, ControlType.kVelocity);
             }
         }
         Robot.frontL.set(0);
@@ -113,7 +116,6 @@ public class autoBlocks {
     public double distanceToEnc(double distance){
         double encCount;
         double rotations = (distance/(8 * Math.PI))*12.75;
-       
         return rotations;
     }
 

@@ -52,7 +52,7 @@ public class autoBlocks {
         }
         System.out.println(speedRatio);
         System.out.println(rightEnc);
-        while(Robot.flEnc.getPosition() < -multiple * leftEnc || Robot.frEnc.getPosition() < multiple * rightEnc){
+        while(Robot.flEnc.getPosition() != leftEnc || Robot.frEnc.getPosition() != rightEnc){
             // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
             if(sideSpeed == false){
                 Robot.flPID.setReference(-2000*speedRatio, ControlType.kVelocity);

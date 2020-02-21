@@ -48,17 +48,18 @@ public class autoBlocks {
         }
         else if(direction == "left"){
             // System.out.println("lefty");
-            rightEnc = -(Robot.frEnc.getPosition() + (distanceToEnc(outerDistance) * proportion));
+            rightEnc = (Robot.frEnc.getPosition() + (distanceToEnc(outerDistance) * proportion));
             leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
             // System.out.println(rightEnc + " right, " + leftEnc + " left");
             sideSpeed = false;
             multiple = 1;
         }
         // System.out.println(speedRatio);
-        while(Math.abs(Robot.flEnc.getPosition() - leftEnc) >= 0.5 ||
+        while(Math.abs(Robot.flEnc.getPosition() + leftEnc) >= 0.5 ||
          Math.abs(Robot.frEnc.getPosition() - rightEnc) >= 0.5){
             // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
-            System.out.println(Robot.flEnc.getVelocity()/Robot.frEnc.getVelocity());
+            System.out.println(Robot.flEnc.getPosition());
+            System.out.println(rightEnc + " target");
             if(sideSpeed == false){
                 Robot.flPID.setReference(3000*speedRatio, ControlType.kVelocity);
                 Robot.blPID.setReference(3000*speedRatio, ControlType.kVelocity);
@@ -82,7 +83,7 @@ public class autoBlocks {
         if(position == 1){
             autoCam();
             do{
-                launcheyBoi.tip();
+                launcheyBoi.tip(); 
                 launcheyBoi.autoLaunchTime();
                 Robot.launch(3);
             }while(Robot.ballCount <3);

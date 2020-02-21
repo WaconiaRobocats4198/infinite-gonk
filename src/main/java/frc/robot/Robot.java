@@ -249,6 +249,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
+    
     // frontR.set(0.2);
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
@@ -340,14 +341,14 @@ public class Robot extends TimedRobot {
     }
     else{
       if(logi.getRawButton(10)){
-        if(pitchEnc.getPosition() > 1){
+        if(pitchEnc.getPosition() > 0.5){
           pitcher.set(-0.25);
         }
-        else if(pitchEnc.getPosition() < -1){
+        else if(pitchEnc.getPosition() < -0.5){
           pitcher.set(0.25);
         }
         else{
-          pitcher.set((-.25*pitchEnc.getPosition()));
+          pitcher.set((-.5*pitchEnc.getPosition()));
         }
       }
       else if(logi.getRawAxis(0)  < 0.05 && logi.getRawAxis(0) > -0.05){

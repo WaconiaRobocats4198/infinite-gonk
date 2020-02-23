@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Solenoid;
 
 import com.ctre.phoenix.motorcontrol.can.*;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -23,6 +24,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
+
 
 
 public class Robot extends TimedRobot {
@@ -70,12 +72,6 @@ public class Robot extends TimedRobot {
 
   public static DigitalInput zero = new DigitalInput(2);
 
-  limelight vision = new limelight();
-
-  // colorParse colorWheel = new colorParse();
-
-  launchAngler sniper = new launchAngler();
-
   public static double kP = 1e-4; 
   public static double kI = 3e-7;
   public static double kD = 0; 
@@ -115,9 +111,23 @@ public class Robot extends TimedRobot {
 
   public static int ballsLeft;
 
+  public static PigeonIMU pigeon = new PigeonIMU(42);
+  public static double [] gyroRead = new double[3];
+  public static double yawStart;
+  public static int stage;
+  public static double startPos;
+  public static boolean stageStart = true;
+
   ballCounter ballsOut = new ballCounter();
 
   autoBlocks basicallyAI = new autoBlocks();
+
+  limelight vision = new limelight();
+
+  // colorParse colorWheel = new colorParse();
+
+  launchAngler sniper = new launchAngler();
+
 
   // public ComplexWidget auto =
   //   tab.add("Auto", autoChoice);
@@ -146,15 +156,13 @@ public class Robot extends TimedRobot {
       uSpeedControl.setReference(3000, ControlType.kVelocity);
       lSpeedControl.setReference(3000, ControlType.kVelocity);
       if(System.currentTimeMillis() >= launchCountdown &&
-        launchStatus == true && mode == 2
-        && logi.getRawButton(1)){
+        launchStatus == true && mode == 2){
           //beltindexer.set(min, kVelocity)
           belt.set(0.3);
         
       }
       else if(System.currentTimeMillis() >= launchCountdown &&
-          launchStatus == true && ballCount > ballsLeft && mode == 1
-          && logi.getRawButton(2)){
+          launchStatus == true && ballCount > ballsLeft && mode == 1){
         belt.set(0.3);
       }
     }

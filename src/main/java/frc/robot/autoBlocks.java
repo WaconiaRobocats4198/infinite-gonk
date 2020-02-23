@@ -16,108 +16,181 @@ public class autoBlocks {
     limelight autoLime = new limelight();
     int moveOn;
     launchAngler launcheyBoi = new launchAngler();
+    boolean limeTarget = false;
     public void straight(double inches){
-        double startPos = Robot.flEnc.getPosition();
+        if(Robot.stageStart){
+            Robot.startPos = Robot.frEnc.getPosition();
+            Robot.stageStart = false;
+        }
         double encTicks = distanceToEnc(inches);
-
-        while(Robot.flEnc.getPosition() <  startPos + encTicks){
+        if(Robot.flEnc.getPosition() <  Robot.startPos + encTicks){
             Robot.scoot.driveCartesian(0, 1, 0);
         }
-        Robot.scoot.driveCartesian(0, 0, 0);
+        else{
+            Robot.scoot.driveCartesian(0, 0, 0);
+            Robot.stage++;
+            Robot.stageStart = true;
+        }
     }
-    public void arc(double degrees, double radius, String direction){
-        System.out.println(degrees/360);
-        double outerDistance = (radius + 9.75) * 2 * Math.PI;
-        // System.out.println(outerDistance/(8*Math.PI) * 12.75);
-        double innerDistance = (radius - 9.75) * 2 * Math.PI;
+    void rotate(int degree){
+        double yawTarget = 0;
+        Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
+        if(Robot.stageStart){
+            yawTarget = Robot.gyroRead[0] + degree;
+            Robot.stageStart = false;
+        }
+  
+        if(Math.abs(Robot.gyroRead[0]- yawTarget) >= 0.2){
+          Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
+          if(Robot.gyroRead[0] > yawTarget + 10){
+            Robot.scoot.driveCartesian(0, 0, 0.2);
+          }
+          else if(Robot.gyroRead[0] < yawTarget - 10){
+            Robot.scoot.driveCartesian(0, 0, -0.2);;
+          }
+          else{
+            Robot.scoot.driveCartesian(0, 0, (yawTarget - Robot.gyroRead[0]) * 0.01);
+          }
+          
+        }
+        else{
+          Robot.scoot.driveCartesian(0, 0, 0);
+          Robot.stage++;
+          Robot.stageStart = true;
+        }
+      }
+    // public void arc(double degrees, double radius, String direction){
+    //     System.out.println(degrees/360);
+    //     double outerDistance = (radius + 9.75) * 2 * Math.PI;
+    //     // System.out.println(outerDistance/(8*Math.PI) * 12.75);
+    //     double innerDistance = (radius - 9.75) * 2 * Math.PI;
         
-        double proportion = degrees/360;
-        double speedRatio = innerDistance/outerDistance;
-        double leftEnc = 0;
-        double rightEnc = 0;
-        boolean sideSpeed = true;
-        int multiple = 1;
+    //     double proportion = degrees/360;
+    //     double speedRatio = innerDistance/outerDistance;
+    //     double leftEnc = 0;
+    //     double rightEnc = 0;
+    //     boolean sideSpeed = true;
+    //     int multiple = 1;
         
-        System.out.println(distanceToEnc(outerDistance) * proportion + " outer rotations");
-        System.out.println(Robot.frEnc.getPosition());
-        if (direction == "right"){
-            leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(outerDistance) * proportion);
-            rightEnc = Robot.frEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
-            sideSpeed = true;
-            multiple = -1;
-        }
-        else if(direction == "left"){
-            // System.out.println("lefty");
-            rightEnc = (Robot.frEnc.getPosition() + (distanceToEnc(outerDistance) * proportion));
-            leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
-            // System.out.println(rightEnc + " right, " + leftEnc + " left");
-            sideSpeed = false;
-            multiple = 1;
-        }
-        // System.out.println(speedRatio);
-        while(Math.abs(Robot.flEnc.getPosition() + leftEnc) >= 0.5 ||
-         Math.abs(Robot.frEnc.getPosition() - rightEnc) >= 0.5){
-            // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
-            System.out.println(Robot.flEnc.getPosition());
-            System.out.println(rightEnc + " target");
-            if(sideSpeed == false){
-                Robot.flPID.setReference(3000*speedRatio, ControlType.kVelocity);
-                Robot.blPID.setReference(3000*speedRatio, ControlType.kVelocity);
-                Robot.frPID.setReference(-3000, ControlType.kVelocity);
-                Robot.brPID.setReference(-3000, ControlType.kVelocity);
-            }
-            else{
-                Robot.flPID.setReference(3000, ControlType.kVelocity);
-                Robot.blPID.setReference(3000, ControlType.kVelocity);
-                Robot.frPID.setReference(-3000*speedRatio, ControlType.kVelocity);
-                Robot.brPID.setReference(-3000*speedRatio, ControlType.kVelocity);
-            }
-        }
-        Robot.frontL.set(0);
-        Robot.frontR.set(0);
-        Robot.backL.set(0);
-        Robot.backR.set(0);
+    //     System.out.println(distanceToEnc(outerDistance) * proportion + " outer rotations");
+    //     System.out.println(Robot.frEnc.getPosition());
+    //     if (direction == "right"){
+    //         leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(outerDistance) * proportion);
+    //         rightEnc = Robot.frEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
+    //         sideSpeed = true;
+    //         multiple = -1;
+    //     }
+    //     else if(direction == "left"){
+    //         // System.out.println("lefty");
+    //         rightEnc = (Robot.frEnc.getPosition() + (distanceToEnc(outerDistance) * proportion));
+    //         leftEnc = Robot.flEnc.getPosition() + (distanceToEnc(innerDistance) * proportion);
+    //         // System.out.println(rightEnc + " right, " + leftEnc + " left");
+    //         sideSpeed = false;
+    //         multiple = 1;
+    //     }
+    //     // System.out.println(speedRatio);
+    //     while(Math.abs(Robot.flEnc.getPosition() - leftEnc) >= 0.5 ||
+    //      Math.abs(Robot.frEnc.getPosition() - rightEnc) >= 0.5){
+    //         // System.out.println(Robot.frEnc.getPosition() + " right " + Robot.flEnc.getPosition() + " left");
+    //         System.out.println(Robot.flEnc.getPosition());
+    //         System.out.println(rightEnc + " target");
+    //         if(sideSpeed == false){
+    //             Robot.flPID.setReference(3000*speedRatio, ControlType.kVelocity);
+    //             Robot.blPID.setReference(3000*speedRatio, ControlType.kVelocity);
+    //             Robot.frPID.setReference(-3000, ControlType.kVelocity);
+    //             Robot.brPID.setReference(-3000, ControlType.kVelocity);
+    //         }
+    //         else{
+    //             Robot.flPID.setReference(3000, ControlType.kVelocity);
+    //             Robot.blPID.setReference(3000, ControlType.kVelocity);
+    //             Robot.frPID.setReference(-3000*speedRatio, ControlType.kVelocity);
+    //             Robot.brPID.setReference(-3000*speedRatio, ControlType.kVelocity);
+    //         }
+    //     }
+    //     Robot.frontL.set(0);
+    //     Robot.frontR.set(0);
+    //     Robot.backL.set(0);
+    //     Robot.backR.set(0);
 
-    }
+    // }
+
     public void fullAuto(int position){
         if(position == 1){
-            autoCam();
-            do{
-                launcheyBoi.tip(); 
-                launcheyBoi.autoLaunchTime();
-                Robot.launch(3);
-            }while(Robot.ballCount <3);
-            straight(-70);
-            autoCam();
-            launcheyBoi.tip();
-            straight(-200);
+            switch (Robot.stage){
+                case 0:
+                    autoCam();
+                    if(limeTarget){
+                        Robot.stage++;
+                        limeTarget = false;
+                    }
+                break;
+                case 1:
+                    launcheyBoi.tip(); 
+                    launcheyBoi.autoLaunchTime();
+                    Robot.launch(2);
+                    if(Robot.ballCount >= 0){
+                        Robot.stage = 1;
+                    }
+                break;
+                case 2:
+                    straight(-70);
+                break;
+                case 3:
+                    autoCam();
+                    if(limeTarget){
+                        Robot.stage++;
+                        limeTarget = false;
+                    }
+                break;
+                case 4:
+                    launcheyBoi.tip();
+                    launcheyBoi.autoLaunchTime();
+                    Robot.launch(2);
+                break;
+                case 5:
+                    straight(-200);
+                break;
+                default:
+            }
         }
         else if(position == 2){
-            straight(-35);
-            if(autoLime.xTranslate > 1 || autoLime.xTranslate < -1){
-                Robot.scoot.driveCartesian(0, 1, 0);
+            switch (Robot.stage){
+                case 0:
+                    straight(-35);
+                break;
+                case 1:
+                    if(autoLime.xTranslate > 1 || autoLime.xTranslate < -1){
+                        Robot.scoot.driveCartesian(0, 1, 0);
+                    }
+                    else{
+                        Robot.scoot.driveCartesian(0, 0, 0);
+                        Robot.stage++;
+                    }
+                break;
+                case 2:
+                    launcheyBoi.innerSet();
+                    launcheyBoi.autoLaunchTime();
+                    Robot.launch(2);
+                break;
+                case 3:
+                    straight(-200);
+                break;
+                default:
             }
-            else{
-                Robot.scoot.driveCartesian(0, 0, 0);
-            }
-            launcheyBoi.innerSet();
-            straight(-200);
-        }
-        else if(position == 3){
-            System.out.println("attempting");
-            arc(90, 24, "left");
         }
     }
     public void autoCam(){
-        if(autoLime.xTranslate > 0){
-            
+        if(autoLime.xTranslate > autoLime.offsetCalculator() + 1){
+            autoLime.camControl();
         }
-        else if(autoLime.xTranslate < 0){
-            
+        else if(autoLime.xTranslate < autoLime.offsetCalculator() -1){
+            autoLime.camControl();
+        }
+        else{
+            limeTarget = true;
         }
     }
     public double distanceToEnc(double distance){
-        double encCount;
         double rotations = (distance/(8*Math.PI))*12.75;
         return rotations;
     }

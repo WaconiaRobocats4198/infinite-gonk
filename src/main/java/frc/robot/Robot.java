@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   public static CANSparkMax topLaunch = new CANSparkMax(6, MotorType.kBrushless);
   public static CANSparkMax bottomLaunch = new CANSparkMax(7, MotorType.kBrushless);
   public static CANSparkMax intake = new CANSparkMax(9, MotorType.kBrushless);
-  public static CANSparkMax ballIn = new CANSparkMax(4, MotorType.kBrushed);
+  public static CANSparkMax pitcherIn = new CANSparkMax(4, MotorType.kBrushed);
   public static CANSparkMax climbWinch = new CANSparkMax(3, MotorType.kBrushless);
   public static CANSparkMax colorWheel = new CANSparkMax(8, MotorType.kBrushless);
 
@@ -158,12 +158,12 @@ public class Robot extends TimedRobot {
       if(System.currentTimeMillis() >= launchCountdown &&
         launchStatus == true && mode == 2){
           //beltindexer.set(min, kVelocity)
-          belt.set(0.3);
+          belt.set(0.6);
         
       }
       else if(System.currentTimeMillis() >= launchCountdown &&
           launchStatus == true && ballCount > ballsLeft && mode == 1){
-        belt.set(0.3);
+        belt.set(0.6);
       }
     }
     else{
@@ -192,11 +192,11 @@ public class Robot extends TimedRobot {
     Shuffleboard.getTab("Preround")
       .add("Auto Choice", autoChoice)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
-    ballIn.setInverted(true);
+    pitcher.setInverted(true);
     topLaunch.setInverted(true);
     bottomLaunch.setInverted(true);
     belt.setInverted(true);
-    pitcher.setInverted(true);
+    pitcherIn.setInverted(true);
     currentPos = beltEnc.getPosition();
     basicallyAI.moveOn = 0;
     frEnc.setPosition(0);
@@ -281,10 +281,10 @@ public class Robot extends TimedRobot {
     
     if(logi.getRawButton(3)){
       if(logi.getRawButton(6)){
-        belt.set(0.3);
+        belt.set(0.6);
       }
       else if(logi.getRawButton(7)){
-        belt.set(-0.3);
+        belt.set(-0.6);
       }
       else{
         belt.set(0);
@@ -326,13 +326,13 @@ public class Robot extends TimedRobot {
 
 
     if(logi.getRawButton(8)){
-      ballIn.set(1);
+      pitcherIn.set(1);
     }
     else if(logi.getRawButton(9)){
-      ballIn.set(-1);
+      pitcherIn.set(-1);
     }
     else{
-      ballIn.set(0);
+      pitcherIn.set(0);
     }
 
     if(ps4.getRawButtonReleased(3)){

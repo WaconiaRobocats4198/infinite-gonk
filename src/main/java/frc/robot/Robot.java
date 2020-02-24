@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
   public static CANSparkMax intake = new CANSparkMax(9, MotorType.kBrushless);
   public static CANSparkMax pitcherIn = new CANSparkMax(4, MotorType.kBrushed);
   public static CANSparkMax climbWinch = new CANSparkMax(3, MotorType.kBrushless);
-  public static CANSparkMax colorWheel = new CANSparkMax(8, MotorType.kBrushless);
+  public static CANSparkMax colorWheel = new CANSparkMax(8, MotorType.kBrushed);
 
   public static CANEncoder flEnc = new CANEncoder(frontL);
   public static CANEncoder frEnc = new CANEncoder(frontR);
@@ -93,8 +93,9 @@ public class Robot extends TimedRobot {
   public static double pAdjust = -4;
 
   public static double launchCountdown;
-  public static double launchWait;
+  public static double launchWait = 1000;
   public static boolean launchStatus = true;
+  public static boolean beltCheck = true;
 
   public static boolean ballWasFront = false;
   public static int ballCount = 0;
@@ -110,6 +111,8 @@ public class Robot extends TimedRobot {
   public static double currentPos;
 
   public static int ballsLeft;
+  public static int lastCount = 0;
+  public static double countDelay = 0;
 
   public static PigeonIMU pigeon = new PigeonIMU(42);
   public static double [] gyroRead = new double[3];
@@ -151,20 +154,27 @@ public class Robot extends TimedRobot {
     lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
 
 
-    System.out.println(ballCount>ballsLeft);
-    if(ballCount > ballsLeft){
+    // System.out.println(ballCount>ballsLeft);
+    if(ballCount > ballsLeft && beltCheck == false){
       uSpeedControl.setReference(3000, ControlType.kVelocity);
       lSpeedControl.setReference(3000, ControlType.kVelocity);
       if(System.currentTimeMillis() >= launchCountdown &&
         launchStatus == true && mode == 2){
           //beltindexer.set(min, kVelocity)
-          belt.set(0.6);
+          belt.set(0.5);
         
       }
       else if(System.currentTimeMillis() >= launchCountdown &&
           launchStatus == true && ballCount > ballsLeft && mode == 1){
-        belt.set(0.6);
+        belt.set(0.5);
       }
+    }
+    else if(outSensor.get()){
+      belt.set(-0.4);
+    }
+    else if(outSensor.get() == false){
+      belt.set(0);
+      beltCheck = false;
     }
     else{
       topLaunch.set(0);
@@ -177,7 +187,7 @@ public class Robot extends TimedRobot {
     if(inSensor.get()){
       // beltDrive.setReference(400, kVelocity)
       if(ballCount < 4){
-        currentPos = beltEnc.getPosition() + 0.01;
+        currentPos = beltEnc.getPosition() + 0.0001;
       }
       else{
         currentPos = beltEnc.getPosition() + 0.0001;
@@ -193,10 +203,10 @@ public class Robot extends TimedRobot {
       .add("Auto Choice", autoChoice)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
     pitcher.setInverted(true);
-    topLaunch.setInverted(true);
+    topLaunch.setInverted(false);
     bottomLaunch.setInverted(true);
-    belt.setInverted(true);
-    pitcherIn.setInverted(true);
+    belt.setInverted(false);
+    pitcherIn.setInverted(false);
     currentPos = beltEnc.getPosition();
     basicallyAI.moveOn = 0;
     frEnc.setPosition(0);
@@ -257,7 +267,6 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-    
     // frontR.set(0.2);
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
@@ -266,12 +275,13 @@ public class Robot extends TimedRobot {
       pitchEnc.setPosition(0);
     }
     // System.out.println(pitchEnc.getPosition());
-    // System.out.println(vision.rangeFinder() + " range");
+    System.out.println(vision.rangeFinder() + " range");
+    System.out.println(vision.offsetCalculator() + " offset");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     beltIndexer();
     // System.out.println(outSensor.get() + " out, was " + ballWasFront);
-    // System.out.println(ballCount);
+    System.out.println(ballCount);
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
     
@@ -281,10 +291,10 @@ public class Robot extends TimedRobot {
     
     if(logi.getRawButton(3)){
       if(logi.getRawButton(6)){
-        belt.set(0.6);
+        belt.set(0.45);
       }
       else if(logi.getRawButton(7)){
-        belt.set(-0.6);
+        belt.set(-0.45);
       }
       else{
         belt.set(0);
@@ -315,7 +325,7 @@ public class Robot extends TimedRobot {
     }
     else{
       if(beltEnc.getPosition() < currentPos){
-        belt.set(0.25);
+        belt.set(0.5);
       }
       else{
         belt.set(0);
@@ -327,12 +337,15 @@ public class Robot extends TimedRobot {
 
     if(logi.getRawButton(8)){
       pitcherIn.set(1);
+      intake.set(0.3);
     }
     else if(logi.getRawButton(9)){
       pitcherIn.set(-1);
+      intake.set(-0.3);
     }
     else{
       pitcherIn.set(0);
+      intake.set(0);
     }
 
     if(ps4.getRawButtonReleased(3)){
@@ -342,13 +355,16 @@ public class Robot extends TimedRobot {
     
     // System.out.println(controlMultiply);
       
-  
+    if(logi.getRawButtonReleased(1) || logi.getRawButtonReleased(2)){
+      beltCheck = true;
+    }
+
     if(ps4.getRawButton(2)){
       vision.camControl();
       sniper.tip();
     }
     else{
-      if(logi.getRawButton(10)){
+      if(logi.getRawButton(8)){
         if(pitchEnc.getPosition() > 0.5){
           pitcher.set(-0.25);
         }
@@ -363,7 +379,9 @@ public class Robot extends TimedRobot {
         pitcherPID.setReference(0, ControlType.kVelocity);
       }
       else{
-        pitcher.set(logi.getRawAxis(0)*0.25);
+        if(logi.getRawButton(3)){
+          pitcher.set(logi.getRawAxis(0)*0.25);
+        }
       }
       scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);

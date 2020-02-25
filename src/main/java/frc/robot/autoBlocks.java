@@ -118,7 +118,7 @@ public class autoBlocks {
         if(position == 1){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(-0.3);
+                    Robot.pitcher.set(0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         stage++;
@@ -163,7 +163,7 @@ public class autoBlocks {
         else if(position == 2){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(-0.3);
+                    Robot.pitcher.set(0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         stage++;

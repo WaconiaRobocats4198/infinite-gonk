@@ -115,6 +115,9 @@ public class autoBlocks {
     // }
 
     public void fullAuto(int position){
+        do{
+            Robot.pitcher.set(-0.4);
+        }while(Robot.pitchEnc.getPosition() != 0);
         if(position == 1){
             switch (Robot.stage){
                 case 0:

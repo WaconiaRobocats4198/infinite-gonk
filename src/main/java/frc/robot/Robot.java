@@ -267,10 +267,12 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
+    SmartDashboard.putNumber("Angle", pitchEnc.getPosition()*(-360/71) + 50);
     // frontR.set(0.2);
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
     // System.out.println(inSensor.get());
+    System.out.println(vision.rangeFinder());
     if(zero.get()){
       pitchEnc.setPosition(0);
     }

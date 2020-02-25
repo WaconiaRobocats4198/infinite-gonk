@@ -70,12 +70,12 @@ public class limelight{
             System.out.println(-0.3*Math.pow(-(xTranslate - offsetCalculator())/57, 0.6));
             if(xTranslate > offsetCalculator() + 1){
                 // System.out.println(-0.4*Math.pow(-xTranslate/54, 0.5));
-                Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.25*Math.pow((xTranslate + offsetCalculator())/57, 0.6));
+                Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.25*Math.pow((xTranslate + offsetCalculator())/57, 0.8));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.2);
             }
             else if(xTranslate <   offsetCalculator() - 1){
               // System.out.println(0.4*Math.pow(xTranslate/54, 0.5));
-                Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.25*Math.pow(-(xTranslate - offsetCalculator())/57, 0.6));
+                Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.25*Math.pow(-(xTranslate - offsetCalculator())/57, 0.8));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.2);
             }
             else{
@@ -97,10 +97,10 @@ public class limelight{
     
     public double rangeFinder(){
       isTarget = (int)tv.getDouble(0);
-      double heightFloor = 23;
+      double heightFloor = 23.25;
       double llOffset = 8.5;
-      double llAngle = 28.8;
-      double targetHeight = 84.25;
+      double llAngle = 31.5;
+      double targetHeight = 91.125;
 
       double yOff = ty.getDouble(0.0);
       double xOff = tx.getDouble(0.0);

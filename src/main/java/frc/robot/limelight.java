@@ -99,7 +99,7 @@ public class limelight{
       isTarget = (int)tv.getDouble(0);
       double heightFloor = 23.25;
       double llOffset = 8.5;
-      double llAngle = 31.5;
+      double llAngle = 31.75;
       double targetHeight = 91.125;
 
       double yOff = ty.getDouble(0.0);

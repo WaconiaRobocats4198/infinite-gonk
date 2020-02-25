@@ -117,7 +117,6 @@ public class Robot extends TimedRobot {
   public static PigeonIMU pigeon = new PigeonIMU(42);
   public static double [] gyroRead = new double[3];
   public static double yawStart;
-  public static int stage;
   public static double startPos;
   public static boolean stageStart = true;
 
@@ -208,7 +207,6 @@ public class Robot extends TimedRobot {
     belt.setInverted(false);
     pitcherIn.setInverted(false);
     currentPos = beltEnc.getPosition();
-    basicallyAI.moveOn = 0;
     frEnc.setPosition(0);
     flEnc.setPosition(0);
     blEnc.setPosition(0);

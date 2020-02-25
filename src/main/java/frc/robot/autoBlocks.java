@@ -14,7 +14,7 @@ import com.revrobotics.ControlType;
 
 public class autoBlocks {
     limelight autoLime = new limelight();
-    int moveOn;
+    int stage = -1;
     launchAngler launcheyBoi = new launchAngler();
     boolean limeTarget = false;
     public void straight(double inches){
@@ -28,7 +28,7 @@ public class autoBlocks {
         }
         else{
             Robot.scoot.driveCartesian(0, 0, 0);
-            Robot.stage++;
+            stage++;
             Robot.stageStart = true;
         }
     }
@@ -55,7 +55,7 @@ public class autoBlocks {
         }
         else{
           Robot.scoot.driveCartesian(0, 0, 0);
-          Robot.stage++;
+          stage++;
           Robot.stageStart = true;
         }
       }
@@ -115,15 +115,19 @@ public class autoBlocks {
     // }
 
     public void fullAuto(int position){
-        do{
-            Robot.pitcher.set(-0.4);
-        }while(Robot.pitchEnc.getPosition() != 0);
         if(position == 1){
-            switch (Robot.stage){
+            switch (stage){
+                case -1:
+                    Robot.pitcher.set(-0.3);
+                    if(Robot.zero.get()){
+                        Robot.pitcher.set(0);
+                        stage++;
+                    }
+                break;
                 case 0:
                     autoCam();
                     if(limeTarget){
-                        Robot.stage++;
+                        stage++;
                         limeTarget = false;
                     }
                 break;
@@ -132,7 +136,7 @@ public class autoBlocks {
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
                     if(Robot.ballCount >= 0){
-                        Robot.stage = 1;
+                        stage++;
                     }
                 break;
                 case 2:
@@ -141,7 +145,7 @@ public class autoBlocks {
                 case 3:
                     autoCam();
                     if(limeTarget){
-                        Robot.stage++;
+                        stage++;
                         limeTarget = false;
                     }
                 break;
@@ -157,7 +161,14 @@ public class autoBlocks {
             }
         }
         else if(position == 2){
-            switch (Robot.stage){
+            switch (stage){
+                case -1:
+                    Robot.pitcher.set(-0.3);
+                    if(Robot.zero.get()){
+                        Robot.pitcher.set(0);
+                        stage++;
+                    }
+                break;
                 case 0:
                     straight(-35);
                 break;
@@ -167,7 +178,7 @@ public class autoBlocks {
                     }
                     else{
                         Robot.scoot.driveCartesian(0, 0, 0);
-                        Robot.stage++;
+                        stage++;
                     }
                 break;
                 case 2:

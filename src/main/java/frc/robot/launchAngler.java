@@ -8,9 +8,18 @@ public class launchAngler {
     double range = ranger.rangeFinder();
     double startAngle;
     boolean launchLast = false;
+    boolean centered = false;
     public double positionTarget;
     public void tip(){
-        
+        if(Math.abs(ranger.xTranslate - ranger.offsetCalculator()) < 1){
+            centered = true;
+        }
+        else{
+            centered = false;
+        }
+        if(centered){
+            
+        }
     }
     public void angleSet(double targetAngle){
         Robot.pitcherPID.setP(1e-2);

@@ -51,7 +51,6 @@ public class limelight{
       public double yOffLimit = -509;
 
       double distance;
-
       public boolean trueTarget;
 
       public int isTarget;
@@ -97,9 +96,9 @@ public class limelight{
     
     public double rangeFinder(){
       isTarget = (int)tv.getDouble(0);
-      double heightFloor = 23.25;
-      double llOffset = 8.5;
-      double llAngle = 31.75;
+      double heightFloor = 23;
+      double llOffset = 8.25;
+      double llAngle = 45;
       double targetHeight = 91.125;
 
       double yOff = ty.getDouble(0.0);

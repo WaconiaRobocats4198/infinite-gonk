@@ -16,6 +16,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.vision.VisionPipeline;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -186,7 +187,7 @@ public class Robot extends TimedRobot {
     if(inSensor.get()){
       // beltDrive.setReference(400, kVelocity)
       if(ballCount < 4){
-        currentPos = beltEnc.getPosition() + 0.0001;
+        currentPos = beltEnc.getPosition() + 0.1;
       }
       else{
         currentPos = beltEnc.getPosition() + 0.0001;
@@ -266,6 +267,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Angle", pitchEnc.getPosition()*(-360/71) + 50);
+    SmartDashboard.putNumber("Range", vision.rangeFinder());
     // frontR.set(0.2);
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
@@ -291,10 +293,10 @@ public class Robot extends TimedRobot {
     
     if(logi.getRawButton(3)){
       if(logi.getRawButton(6)){
-        belt.set(0.45);
+        belt.set(0.3);
       }
       else if(logi.getRawButton(7)){
-        belt.set(-0.45);
+        belt.set(-0.3);
       }
       else{
         belt.set(0);
@@ -326,6 +328,10 @@ public class Robot extends TimedRobot {
     else{
       if(beltEnc.getPosition() < currentPos){
         belt.set(0.5);
+      }
+      else if(beltEnc.getPosition() > currentPos
+         && inSensor.get() == false){
+        belt.set((currentPos-beltEnc.getPosition())/10);
       }
       else{
         belt.set(0);
@@ -364,6 +370,7 @@ public class Robot extends TimedRobot {
       sniper.tip();
     }
     else{
+      vision.pipeline.setDouble(0);
       if(logi.getRawButton(8)){
         if(pitchEnc.getPosition() > 0.5){
           pitcher.set(-0.25);

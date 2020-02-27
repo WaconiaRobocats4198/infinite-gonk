@@ -13,6 +13,26 @@ import com.revrobotics.ControlType;
 
 
 public class autoBlocks {
+    public void autoIntake(boolean running){
+        if(running){
+            if(Robot.pitchEnc.getPosition() > 0.5){
+                Robot.pitcher.set(-0.25);
+            }
+            else if(Robot.pitchEnc.getPosition() < -0.5){
+                Robot.pitcher.set(0.25);
+            }
+            else{
+                Robot.pitcher.set((-.5*Robot.pitchEnc.getPosition()));
+            }
+            Robot.pitcherIn.set(1);
+            Robot.intake.set(0.3);
+        }
+        else{
+            Robot.pitcherIn.set(0);
+            Robot.intake.set(0);
+            Robot.pitcherPID.setReference(0, ControlType.kVelocity);
+        }
+    }
     limelight autoLime = new limelight();
     int stage = -1;
     launchAngler launcheyBoi = new launchAngler();
@@ -140,6 +160,7 @@ public class autoBlocks {
                     }
                 break;
                 case 2:
+                    autoIntake(true);
                     straight(-70);
                 break;
                 case 3:

@@ -153,7 +153,7 @@ public class autoBlocks {
         if(position == 1){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(-0.3);
+                    Robot.pitcher.set(0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
@@ -179,7 +179,8 @@ public class autoBlocks {
                     launcheyBoi.tip(); 
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
-                    if(Robot.ballCount >= 0){
+                    Robot.ballsOut.ballsIn();
+                    if(Robot.ballCount == 0){
                         stage++;
                     }
                 break;
@@ -206,6 +207,10 @@ public class autoBlocks {
                     launcheyBoi.tip();
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
+                    Robot.ballsOut.ballsIn();
+                    if(Robot.ballCount == 0){
+                        stage++;
+                    }
                 break;
                 case 7:
                     rotate(Robot.gyroRead[0]-lastRotation);
@@ -219,7 +224,7 @@ public class autoBlocks {
         else if(position == 2){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(-0.3);
+                    Robot.pitcher.set(0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         stage++;
@@ -241,6 +246,10 @@ public class autoBlocks {
                     launcheyBoi.tip();
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
+                    Robot.ballsOut.ballsIn();
+                    if(Robot.ballCount == 0){
+                        stage++;
+                    }
                 break;
                 case 3:
                     straight(-200);
@@ -251,13 +260,18 @@ public class autoBlocks {
         else if(position == 3){
             switch(stage){
                 case -1:
-                Robot.pitcher.set(-0.3);
+                Robot.pitcher.set(0.3);
                 if(Robot.zero.get()){
                     Robot.pitcher.set(0);
                     stage++;
                 }
                 break;
                 case 0:
+                    launcheyBoi.tip();
+                    launcheyBoi.autoLaunchTime();
+                    Robot.launch(2); 
+                break;
+                case 1:
                     straight(-35);
                 break;
                 default:

@@ -123,6 +123,7 @@ public class Robot extends TimedRobot {
   public static boolean stageStart = true;
 
   public static double targetAngle;
+  public static double stay;
 
   public static double autoDelay;
 
@@ -168,13 +169,13 @@ public class Robot extends TimedRobot {
       uSpeedControl.setReference(2700, ControlType.kVelocity);
       lSpeedControl.setReference(2700, ControlType.kVelocity);
       if(launchStatus == true && mode == 2
-        && topLaunchEnc.getVelocity() > 2600 && botLaunchEnc.getVelocity() > 2600){
+        && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2600){
           //beltindexer.set(min, kVelocity)
           belt.set(0.5);
         
       }
       else if(launchStatus == true && ballCount > ballsLeft && mode == 1
-          && topLaunchEnc.getVelocity() > 2800 && botLaunchEnc.getVelocity() > 2800){
+          && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2550){
         belt.set(0.5);
       }
     }
@@ -270,7 +271,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    
+    System.out.println(basicallyAI.stage);
     vision.pipeline.setDouble(0);
     if(zero.get()){
       pitchEnc.setPosition(0);
@@ -394,14 +395,14 @@ public class Robot extends TimedRobot {
     else{
       vision.pipeline.setDouble(1);
       if(logi.getRawButton(8)){
-        if(pitchEnc.getPosition() > 1){
+        if(pitchEnc.getPosition() > 0){
           pitcher.set(-0.25);
         }
-        else if(pitchEnc.getPosition() < -1){
+        else if(pitchEnc.getPosition() < -2){
           pitcher.set(0.25);
         }
         else{
-          pitcher.set((-.24*pitchEnc.getPosition()));
+          pitcher.set(-.24*(pitchEnc.getPosition()-1));
         }
         // sniper.angleSet(50);
       }
@@ -411,6 +412,7 @@ public class Robot extends TimedRobot {
       else if(climbState == -1){
         if(pitchEnc.getPosition() > -3){
           pitcher.set(-0.24);
+          
         }
         else if(pitchEnc.getPosition() > -3.353 && pitchEnc.getPosition() <= -3){
           pitcher.set((pitchEnc.getPosition() + 3.35)/-3);
@@ -422,9 +424,10 @@ public class Robot extends TimedRobot {
       else{
         if(logi.getRawButton(3)){
           pitcher.set(logi.getRawAxis(0)*0.25);
+          stay = pitchEnc.getPosition();
         }
       }
-      scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
+        scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);
       }
       if(ps4.getRawButtonPressed(14)){

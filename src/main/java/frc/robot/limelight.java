@@ -68,12 +68,12 @@ public class limelight{
         if(isTarget != 0){
           // System.out.println(offsetCalculator() + " calculated " + xTranslate + " actual");
             // System.out.println(-0.3*Math.pow(-(xTranslate - offsetCalculator())/57, 0.6));
-            if(xTranslate > offsetCalculator() + 0.25){
+            if(xTranslate > offsetCalculator() + 0.1){
                 // System.out.println(-0.4*Math.pow(-xTranslate/54, 0.5));
                 Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.25*Math.pow((xTranslate + offsetCalculator())/57, 0.9));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.2);
             }
-            else if(xTranslate <   offsetCalculator() - 0.25){
+            else if(xTranslate <   offsetCalculator() - 0.1){
               // System.out.println(0.4*Math.pow(xTranslate/54, 0.5));
                 Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.25*Math.pow(-(xTranslate - offsetCalculator())/57, 0.9));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.2);

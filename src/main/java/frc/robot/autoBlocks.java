@@ -48,7 +48,6 @@ public class autoBlocks {
     limelight autoLime = new limelight();
     int stage = -1;
     launchAngler launcheyBoi = new launchAngler();
-    boolean limeTarget = false;
     public void straight(double inches){
         if(Robot.stageStart){
             Robot.startPos = Robot.frEnc.getPosition();
@@ -57,6 +56,9 @@ public class autoBlocks {
         double encTicks = distanceToEnc(inches);
         if(Robot.flEnc.getPosition() <  Robot.startPos + encTicks){
             Robot.scoot.driveCartesian(0, 1, 0);
+        }
+        else if(Robot.flEnc.getPosition() >  Robot.startPos + encTicks){
+            Robot.scoot.driveCartesian(0, -1, 0);
         }
         else{
             Robot.scoot.driveCartesian(0, 0, 0);
@@ -153,7 +155,7 @@ public class autoBlocks {
         if(position == 1){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(0.3);
+                    Robot.pitcher.set(0.2);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
@@ -171,7 +173,7 @@ public class autoBlocks {
                 case 1:
                     autoLime.pipeline.setDouble(0);
                     launcheyBoi.tip(); 
-                    launcheyBoi.autoLaunchTime();
+                    // launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
                     Robot.ballsOut.ballsIn();
                     if(Robot.ballCount == 0){
@@ -197,7 +199,8 @@ public class autoBlocks {
                     autoLime.pipeline.setDouble(0);
                     autoLime.camControl();
                     launcheyBoi.tip();
-                    launcheyBoi.autoLaunchTime();
+                    Robot.ballsLeft = 0;
+                    // launcheyBoi.autoLaunchTime();
                     Robot.ballsOut.ballsIn();
                     Robot.launch(2);
                     if(Robot.ballCount == 0){
@@ -216,7 +219,7 @@ public class autoBlocks {
         else if(position == 2){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(0.3);
+                    Robot.pitcher.set(0.2);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         stage++;
@@ -238,7 +241,8 @@ public class autoBlocks {
                     autoLime.pipeline.setDouble(0);
                     autoLime.camControl();
                     launcheyBoi.tip();
-                    launcheyBoi.autoLaunchTime();
+                    Robot.ballsLeft = 0;
+                    // launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
                     Robot.ballsOut.ballsIn();
                     if(Robot.ballCount == 0){
@@ -254,7 +258,7 @@ public class autoBlocks {
         else if(position == 3){
             switch(stage){
                 case -1:
-                Robot.pitcher.set(0.3);
+                Robot.pitcher.set(0.2);
                 if(Robot.zero.get()){
                     Robot.pitcher.set(0);
                     stage++;
@@ -265,9 +269,10 @@ public class autoBlocks {
                     autoLime.camControl();
                     launcheyBoi.tip();
                     // launcheyBoi.autoLaunchTime();
-                    Robot.launch(2); 
+                    Robot.launch(2);
+                    Robot.ballsLeft = 0;
                     Robot.ballsOut.ballsIn();
-                    if(Robot.ballCount >= 0){
+                    if(Robot.ballCount <= 0){
                         stage++;
                         Robot.topLaunch.set(0);
                         Robot.bottomLaunch.set(0);

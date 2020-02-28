@@ -14,6 +14,18 @@ import com.revrobotics.ControlType;
 
 public class autoBlocks {
     public double lastRotation;
+    public void autoBelt(){
+        if(Robot.beltEnc.getPosition() < Robot.currentPos){
+            Robot.belt.set(0.5);
+          }
+          else if(Robot.beltEnc.getPosition() > Robot.currentPos
+             && Robot.inSensor.get() == false){
+            Robot.belt.set((Robot.currentPos-Robot.beltEnc.getPosition())/10);
+          }
+          else{
+            Robot.belt.set(0);
+          }
+    }
     public void autoIntake(boolean running){
         if(running){
             if(Robot.pitchEnc.getPosition() > 0.5){
@@ -31,7 +43,6 @@ public class autoBlocks {
         else{
             Robot.pitcherIn.set(0);
             Robot.intake.set(0);
-            Robot.pitcherPID.setReference(0, ControlType.kVelocity);
         }
     }
     limelight autoLime = new limelight();
@@ -67,7 +78,7 @@ public class autoBlocks {
             Robot.scoot.driveCartesian(0, 0, 0.2);
           }
           else if(Robot.gyroRead[0] < yawTarget - 10){
-            Robot.scoot.driveCartesian(0, 0, -0.2);;
+            Robot.scoot.driveCartesian(0, 0, -0.2);
           }
           else{
             Robot.scoot.driveCartesian(0, 0, (yawTarget - Robot.gyroRead[0]) * 0.01);
@@ -136,10 +147,13 @@ public class autoBlocks {
     // }
 
     public void fullAuto(int position){
+        while(System.currentTimeMillis() < Robot.autoDelay + 250){
+            Robot.pitcher.set(-0.2);
+        }
         if(position == 1){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(0.3);
+                    Robot.pitcher.set(-0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
@@ -148,7 +162,7 @@ public class autoBlocks {
                     }
                 break;
                 case 0:
-                    Robot.scoot.driveCartesian(0, 0, -0.3);
+                    Robot.scoot.driveCartesian(0, 0, -0.1);
                     if(autoLime.isTarget != 0){
                         Robot.scoot.driveCartesian(0, 0, 0);
                         stage++;
@@ -174,6 +188,7 @@ public class autoBlocks {
                     rotate(Robot.gyroRead[0]-lastRotation);
                 break;
                 case 4:
+                    autoBelt();
                     autoIntake(true);
                     straight(-194);
                     Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
@@ -204,7 +219,7 @@ public class autoBlocks {
         else if(position == 2){
             switch (stage){
                 case -1:
-                    Robot.pitcher.set(0.3);
+                    Robot.pitcher.set(-0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
                         stage++;
@@ -236,7 +251,7 @@ public class autoBlocks {
         else if(position == 3){
             switch(stage){
                 case -1:
-                Robot.pitcher.set(0.3);
+                Robot.pitcher.set(-0.3);
                 if(Robot.zero.get()){
                     Robot.pitcher.set(0);
                     stage++;

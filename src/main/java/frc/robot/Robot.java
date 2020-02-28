@@ -125,6 +125,8 @@ public class Robot extends TimedRobot {
 
   public static double targetAngle;
 
+  public static double autoDelay;
+
   public static int climbState = 1;
 
   ballCounter ballsOut = new ballCounter();
@@ -263,13 +265,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-   
+    autoDelay = System.currentTimeMillis();
   }
 
   
   @Override
   public void autonomousPeriodic() {
+    vision.pipeline.setDouble(0);
     ballsOut.ballsIn();
+    beltIndexer();
     int finalChoice = (int)autoChoice.getSelected();
     basicallyAI.fullAuto(finalChoice);
   }
@@ -400,7 +404,12 @@ public class Robot extends TimedRobot {
         sniper.angleSet(0);
       }
       else if(climbState == -1){
-        sniper.angleSet(67);
+        if(pitchEnc.getPosition() > -3){
+          pitcher.set(-0.24);
+        }
+        else if(pitchEnc.getPosition() > -3.353 && pitchEnc.getPosition() <= -3){
+          pitcher.set((pitchEnc.getPosition() + 3.357)/-3);
+        }
       }
       else if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
         pitcherPID.setReference(0, ControlType.kVelocity);
@@ -417,8 +426,10 @@ public class Robot extends TimedRobot {
         climbState = climbState * -1;
       }
       if(ps4.getRawButton(6) || ps4.getRawButton(5)){
-
         climber.winch();
+      }
+      else{
+        climbWinch.set(0);
       }
     // if(ps4.getRawButton(4)){
     //   colorWheel.ColorControl(4);

@@ -13,15 +13,15 @@ public class launchAngler {
     public double positionTarget;
     public void tip(){
         // System.out.println(centered);
-        if(ranger.xTranslate > ranger.offsetCalculator() + 2){
-            centered = false;
-        }
-        else if(ranger.xTranslate < ranger.offsetCalculator() - 2){
-            centered = false;
-        }   
-        else{
-           centered = true;
-        }
+        // if(ranger.xTranslate > ranger.offsetCalculator() + 2){
+        //     centered = false;
+        // }
+        // else if(ranger.xTranslate < ranger.offsetCalculator() - 2){
+        //     centered = false;
+        // }   
+        // else{
+        //    centered = true;
+        // }
         if(ranger.rangeFinder() > atRange + 1 || ranger.rangeFinder() < atRange -1){
             atRange = ranger.rangeFinder();
         }

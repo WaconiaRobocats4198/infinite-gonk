@@ -13,10 +13,10 @@ public class climb{
         if(Robot.ps4.getRawButton(4)){direction = -1;}
         else{direction = 1;}
         while(Robot.ps4.getRawButton(5)){
-            Robot.climbWinch.set(0.6 * direction);
+            Robot.fricWheel.set(-1 * direction);
         }
         while(Robot.ps4.getRawButton(6)){
-            Robot.climbWinch.set(-0.4);
+            Robot.climbWinch.set(-1 * direction);
         }
     }
 

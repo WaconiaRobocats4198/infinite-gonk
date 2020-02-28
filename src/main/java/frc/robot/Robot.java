@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
   public static CANSparkMax intake = new CANSparkMax(9, MotorType.kBrushless);
   public static CANSparkMax pitcherIn = new CANSparkMax(4, MotorType.kBrushed);
   public static CANSparkMax climbWinch = new CANSparkMax(3, MotorType.kBrushless);
-  public static CANSparkMax colorWheel = new CANSparkMax(8, MotorType.kBrushed);
+  public static CANSparkMax fricWheel = new CANSparkMax(8, MotorType.kBrushed);
 
   public static CANEncoder flEnc = new CANEncoder(frontL);
   public static CANEncoder frEnc = new CANEncoder(frontR);
@@ -165,10 +165,10 @@ public class Robot extends TimedRobot {
 
     // System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft && beltCheck == false){
-      uSpeedControl.setReference(3000, ControlType.kVelocity);
-      lSpeedControl.setReference(3000, ControlType.kVelocity);
+      uSpeedControl.setReference(2700, ControlType.kVelocity);
+      lSpeedControl.setReference(2700, ControlType.kVelocity);
       if(launchStatus == true && mode == 2
-        && topLaunchEnc.getVelocity() > 2800 && botLaunchEnc.getVelocity() > 2800){
+        && topLaunchEnc.getVelocity() > 2600 && botLaunchEnc.getVelocity() > 2600){
           //beltindexer.set(min, kVelocity)
           belt.set(0.5);
         
@@ -270,7 +270,11 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
+    
     vision.pipeline.setDouble(0);
+    if(zero.get()){
+      pitchEnc.setPosition(0);
+    }
     ballsOut.ballsIn();
     System.out.println(ballCount);
     beltIndexer();
@@ -431,6 +435,10 @@ public class Robot extends TimedRobot {
       }
       else{
         climbWinch.set(0);
+        fricWheel.set(0);
+      }
+      if(ps4.getRawButton(3)){
+        sniper.angleSet(29);
       }
     // if(ps4.getRawButton(4)){
     //   colorWheel.ColorControl(4);

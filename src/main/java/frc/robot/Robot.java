@@ -27,7 +27,6 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 
 
-
 public class Robot extends TimedRobot {
   
   public static Joystick ps4 = new Joystick(0);
@@ -129,7 +128,7 @@ public class Robot extends TimedRobot {
 
   public static int climbState = 1;
 
-  ballCounter ballsOut = new ballCounter();
+  public static ballCounter ballsOut = new ballCounter();
 
   autoBlocks basicallyAI = new autoBlocks();
 
@@ -408,7 +407,7 @@ public class Robot extends TimedRobot {
           pitcher.set(-0.24);
         }
         else if(pitchEnc.getPosition() > -3.353 && pitchEnc.getPosition() <= -3){
-          pitcher.set((pitchEnc.getPosition() + 3.357)/-3);
+          pitcher.set((pitchEnc.getPosition() + 3.35)/-3);
         }
       }
       else if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){

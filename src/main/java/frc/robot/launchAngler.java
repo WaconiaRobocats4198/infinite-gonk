@@ -25,7 +25,7 @@ public class launchAngler {
         if(ranger.rangeFinder() > atRange + 1 || ranger.rangeFinder() < atRange -1){
             atRange = ranger.rangeFinder();
         }
-        System.out.println("atRange");
+        // System.out.println("atRange");
         if(ranger.rangeFinder() > 70 && ranger.rangeFinder() < 266){
             // System.out.println(howFar + " distance");
             Robot.targetAngle = 0.0006925*Math.pow(atRange, 2)+-0.24*(atRange)+54.34;
@@ -45,7 +45,7 @@ public class launchAngler {
     public void angleSet(double targetAngle){
         // pitchEnc.getPosition()*(-360/71) + 50
         positionTarget = (targetAngle-50)/(-5.07);
-        System.out.println(positionTarget + " positionTarget");
+        // System.out.println(positionTarget + " positionTarget");
 
         if(Robot.pitchEnc.getPosition() > positionTarget + 1){
             Robot.pitcher.set(-0.25);
@@ -58,7 +58,7 @@ public class launchAngler {
             Robot.pitcherPID.setP(5e-5);
             Robot.pitcherPID.setReference((-.25*Robot.pitchEnc.getPosition()), ControlType.kVelocity);
           }
-        if(Math.abs(Robot.pitchEnc.getPosition() - positionTarget) < 0.2){
+        if(Robot.pitchEnc.getPosition() < positionTarget + 1 || Robot.pitchEnc.getPosition() > positionTarget - 1){
             Robot.launchStatus = true;
         }
     }
@@ -69,8 +69,8 @@ public class launchAngler {
     public void autoLaunchTime(){
         if(Robot.launchStatus == true && launchLast == false){
             Robot.launchCountdown = System.currentTimeMillis() + Robot.launchWait;
-            Robot.ballCount = 0;
         }
+        System.out.println(launchLast + "launchlast");
         launchLast = Robot.launchStatus;
         
     }

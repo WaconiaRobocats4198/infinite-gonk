@@ -13,6 +13,7 @@ import com.revrobotics.ControlType;
 
 
 public class autoBlocks {
+    public double lastRotation;
     public void autoIntake(boolean running){
         if(running){
             if(Robot.pitchEnc.getPosition() > 0.5){
@@ -52,7 +53,7 @@ public class autoBlocks {
             Robot.stageStart = true;
         }
     }
-    void rotate(int degree){
+    void rotate(double degree){
         double yawTarget = 0;
         Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
         if(Robot.stageStart){
@@ -141,17 +142,26 @@ public class autoBlocks {
                     Robot.pitcher.set(0.3);
                     if(Robot.zero.get()){
                         Robot.pitcher.set(0);
+                        Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
+                        lastRotation = Robot.gyroRead[0];
                         stage++;
                     }
                 break;
                 case 0:
+                    Robot.scoot.driveCartesian(0, 0, -0.3);
+                    if(autoLime.isTarget != 0){
+                        Robot.scoot.driveCartesian(0, 0, 0);
+                        stage++;
+                    }
+                break;
+                case 1:
                     autoCam();
                     if(limeTarget){
                         stage++;
                         limeTarget = false;
                     }
                 break;
-                case 1:
+                case 2:
                     launcheyBoi.tip(); 
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
@@ -159,23 +169,33 @@ public class autoBlocks {
                         stage++;
                     }
                 break;
-                case 2:
-                    autoIntake(true);
-                    straight(-70);
-                break;
                 case 3:
+                    Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
+                    rotate(Robot.gyroRead[0]-lastRotation);
+                break;
+                case 4:
+                    autoIntake(true);
+                    straight(-194);
+                    Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
+                    lastRotation = Robot.gyroRead[0];
+                break;
+                case 5:
+                    autoIntake(false);
                     autoCam();
                     if(limeTarget){
                         stage++;
                         limeTarget = false;
                     }
                 break;
-                case 4:
+                case 6:
                     launcheyBoi.tip();
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
                 break;
-                case 5:
+                case 7:
+                    rotate(Robot.gyroRead[0]-lastRotation);
+                    launcheyBoi.angleSet(0);
+                case 8:
                     straight(-200);
                 break;
                 default:
@@ -203,12 +223,27 @@ public class autoBlocks {
                     }
                 break;
                 case 2:
-                    launcheyBoi.innerSet();
+                    launcheyBoi.tip();
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
                 break;
                 case 3:
                     straight(-200);
+                break;
+                default:
+            }
+        }
+        else if(position == 3){
+            switch(stage){
+                case -1:
+                Robot.pitcher.set(0.3);
+                if(Robot.zero.get()){
+                    Robot.pitcher.set(0);
+                    stage++;
+                }
+                break;
+                case 0:
+                    straight(-35);
                 break;
                 default:
             }

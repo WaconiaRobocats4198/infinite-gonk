@@ -55,6 +55,7 @@ public class Robot extends TimedRobot {
   public static CANEncoder beltEnc = new CANEncoder(belt);
   public static CANEncoder topLaunchEnc = new CANEncoder(topLaunch);
   public static CANEncoder botLaunchEnc = new CANEncoder(bottomLaunch);
+  public static CANEncoder climbEnc = new CANEncoder(climbWinch);
 
 
   public static CANPIDController frPID = new CANPIDController(frontR);
@@ -105,6 +106,7 @@ public class Robot extends TimedRobot {
   public static SendableChooser autoChoice = new SendableChooser<>();
   public static int primeAuto = 1;
   public static int universalAuto = 2;
+  public static int straightBack = 3;
 
   public static double actualEnc;
   public static double encOffset;
@@ -121,11 +123,17 @@ public class Robot extends TimedRobot {
   public static double startPos;
   public static boolean stageStart = true;
 
+  public static double targetAngle;
+
+  public static int climbState = 1;
+
   ballCounter ballsOut = new ballCounter();
 
   autoBlocks basicallyAI = new autoBlocks();
 
   limelight vision = new limelight();
+
+  climb climber = new climb();
 
   // colorParse colorWheel = new colorParse();
 
@@ -199,6 +207,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     autoChoice.addOption("6 Ball", primeAuto);
     autoChoice.addOption("Universal Auto", universalAuto);
+    autoChoice.addOption("Straight Back", straightBack);
     Shuffleboard.getTab("Preround")
       .add("Auto Choice", autoChoice)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
@@ -212,6 +221,7 @@ public class Robot extends TimedRobot {
     flEnc.setPosition(0);
     blEnc.setPosition(0);
     brEnc.setPosition(0);
+    ballCount = 3;
     
     frPID.setP(kP);
     frPID.setI(kI);
@@ -241,6 +251,8 @@ public class Robot extends TimedRobot {
     blPID.setFF(kFF);
     blPID.setOutputRange(kMinOutput, kMaxOutput);
 
+    pitcher.setOpenLoopRampRate(0.5);
+    pitcher.setClosedLoopRampRate(0.5);
   }
 
   
@@ -257,9 +269,9 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    // ballsOut.ballsIn();
-    // int finalChoice = (int)autoChoice.getSelected();
-    // basicallyAI.fullAuto(finalChoice);
+    ballsOut.ballsIn();
+    int finalChoice = (int)autoChoice.getSelected();
+    basicallyAI.fullAuto(finalChoice);
   }
 
 
@@ -267,23 +279,23 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Angle", pitchEnc.getPosition()*(-360/71) + 50);
+    SmartDashboard.putNumber("Target Angle", targetAngle);
     SmartDashboard.putNumber("Range", vision.rangeFinder());
     // frontR.set(0.2);
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
-    // System.out.println(inSensor.get());
-    System.out.println(vision.rangeFinder());
+    // System.out.println(inSensor.get());;
     if(zero.get()){
       pitchEnc.setPosition(0);
     }
     // System.out.println(pitchEnc.getPosition());
-    System.out.println(vision.rangeFinder() + " range");
-    System.out.println(vision.offsetCalculator() + " offset");
+    // System.out.println(vision.rangeFinder() + " range");
+    // System.out.println(vision.offsetCalculator() + " offset");
     // System.out.println(inSensor.get() + " in " + outSensor.get() + " out");
     ballsOut.ballsIn();
     beltIndexer();
     // System.out.println(outSensor.get() + " out, was " + ballWasFront);
-    System.out.println(ballCount);
+    // System.out.println(ballCount);
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
     
@@ -366,23 +378,31 @@ public class Robot extends TimedRobot {
     }
 
     if(ps4.getRawButton(2)){
+      vision.pipeline.setDouble(0);
       vision.camControl();
       sniper.tip();
     }
     else{
-      vision.pipeline.setDouble(0);
+      vision.pipeline.setDouble(1);
       if(logi.getRawButton(8)){
-        if(pitchEnc.getPosition() > 0.5){
+        if(pitchEnc.getPosition() > 1){
           pitcher.set(-0.25);
         }
-        else if(pitchEnc.getPosition() < -0.5){
+        else if(pitchEnc.getPosition() < -1){
           pitcher.set(0.25);
         }
         else{
-          pitcher.set((-.5*pitchEnc.getPosition()));
+          pitcher.set((-.24*pitchEnc.getPosition()));
         }
+        // sniper.angleSet(50);
       }
-      else if(logi.getRawAxis(0)  < 0.05 && logi.getRawAxis(0) > -0.05){
+      else if(logi.getRawButton(10)){
+        sniper.angleSet(0);
+      }
+      else if(climbState == -1){
+        sniper.angleSet(67);
+      }
+      else if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
         pitcherPID.setReference(0, ControlType.kVelocity);
       }
       else{
@@ -392,7 +412,14 @@ public class Robot extends TimedRobot {
       }
       scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
     // scoot.driveCartesian(roll, crab, rotate);
-    }
+      }
+      if(ps4.getRawButtonPressed(14)){
+        climbState = climbState * -1;
+      }
+      if(ps4.getRawButton(6) || ps4.getRawButton(5)){
+
+        climber.winch();
+      }
     // if(ps4.getRawButton(4)){
     //   colorWheel.ColorControl(4);
     // }

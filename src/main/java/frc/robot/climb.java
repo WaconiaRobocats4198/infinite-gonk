@@ -10,11 +10,13 @@ import com.revrobotics.CANPIDController;
 public class climb{
     void winch(){
         while(Robot.ps4.getRawButton(5)){
-            Robot.climbWinch.set(0.4);
+            Robot.fricWheel.set(0.4);
         }
         while(Robot.ps4.getRawButton(6)){
             Robot.climbWinch.set(-0.4);
         }
     }
+
+    
 
 }

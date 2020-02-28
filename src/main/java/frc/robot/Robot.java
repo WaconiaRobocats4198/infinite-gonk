@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
   public static CANSparkMax intake = new CANSparkMax(9, MotorType.kBrushless);
   public static CANSparkMax pitcherIn = new CANSparkMax(4, MotorType.kBrushed);
   public static CANSparkMax climbWinch = new CANSparkMax(3, MotorType.kBrushless);
-  public static CANSparkMax colorWheel = new CANSparkMax(8, MotorType.kBrushed);
+  public static CANSparkMax fricWheel = new CANSparkMax(8, MotorType.kBrushed);
 
   public static CANEncoder flEnc = new CANEncoder(frontL);
   public static CANEncoder frEnc = new CANEncoder(frontR);

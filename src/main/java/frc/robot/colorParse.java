@@ -110,7 +110,8 @@
 //         }
 //     }
 //     static void spinmotor(){
-//     
+//     if(button == 4)
+//            
 //      
 //  }
 // }

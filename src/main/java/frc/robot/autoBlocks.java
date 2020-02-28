@@ -169,13 +169,7 @@ public class autoBlocks {
                     }
                 break;
                 case 1:
-                    autoCam();
-                    if(limeTarget){
-                        stage++;
-                        limeTarget = false;
-                    }
-                break;
-                case 2:
+                    autoLime.pipeline.setDouble(0);
                     launcheyBoi.tip(); 
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
@@ -184,38 +178,36 @@ public class autoBlocks {
                         stage++;
                     }
                 break;
-                case 3:
+                case 2:
                     Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
                     rotate(Robot.gyroRead[0]-lastRotation);
                 break;
-                case 4:
+                case 3:
                     autoBelt();
                     autoIntake(true);
                     straight(-194);
                     Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
                     lastRotation = Robot.gyroRead[0];
                 break;
-                case 5:
+                case 4:
                     autoIntake(false);
-                    autoCam();
-                    if(limeTarget){
-                        stage++;
-                        limeTarget = false;
-                    }
+                    stage++;
                 break;
-                case 6:
+                case 5:
+                    autoLime.pipeline.setDouble(0);
+                    autoLime.camControl();
                     launcheyBoi.tip();
                     launcheyBoi.autoLaunchTime();
-                    Robot.launch(2);
                     Robot.ballsOut.ballsIn();
+                    Robot.launch(2);
                     if(Robot.ballCount == 0){
                         stage++;
                     }
                 break;
-                case 7:
+                case 6:
                     rotate(Robot.gyroRead[0]-lastRotation);
                     launcheyBoi.angleSet(0);
-                case 8:
+                case 7:
                     straight(-200);
                 break;
                 default:
@@ -243,6 +235,8 @@ public class autoBlocks {
                     }
                 break;
                 case 2:
+                    autoLime.pipeline.setDouble(0);
+                    autoLime.camControl();
                     launcheyBoi.tip();
                     launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
@@ -267,9 +261,17 @@ public class autoBlocks {
                 }
                 break;
                 case 0:
+                    autoLime.pipeline.setDouble(0);
+                    autoLime.camControl();
                     launcheyBoi.tip();
-                    launcheyBoi.autoLaunchTime();
+                    // launcheyBoi.autoLaunchTime();
                     Robot.launch(2); 
+                    Robot.ballsOut.ballsIn();
+                    if(Robot.ballCount >= 0){
+                        stage++;
+                        Robot.topLaunch.set(0);
+                        Robot.bottomLaunch.set(0);
+                    }
                 break;
                 case 1:
                     straight(-35);
@@ -279,14 +281,16 @@ public class autoBlocks {
         }
     }
     public void autoCam(){
-        if(autoLime.xTranslate > autoLime.offsetCalculator() + 1){
-            autoLime.camControl();
-        }
-        else if(autoLime.xTranslate < autoLime.offsetCalculator() -1){
-            autoLime.camControl();
-        }
-        else{
-            limeTarget = true;
+        autoLime.pipeline.setDouble(0);
+        autoLime.camControl();
+        launcheyBoi.tip();
+        // launcheyBoi.autoLaunchTime();
+        Robot.launch(2); 
+        Robot.ballsOut.ballsIn();
+        if(Robot.ballCount >= 0){
+            stage++;
+            Robot.topLaunch.set(0);
+            Robot.bottomLaunch.set(0);
         }
     }
     public double distanceToEnc(double distance){

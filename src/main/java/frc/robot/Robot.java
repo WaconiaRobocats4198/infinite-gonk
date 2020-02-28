@@ -167,14 +167,14 @@ public class Robot extends TimedRobot {
     if(ballCount > ballsLeft && beltCheck == false){
       uSpeedControl.setReference(3000, ControlType.kVelocity);
       lSpeedControl.setReference(3000, ControlType.kVelocity);
-      if(System.currentTimeMillis() >= launchCountdown &&
-        launchStatus == true && mode == 2){
+      if(launchStatus == true && mode == 2
+        && topLaunchEnc.getVelocity() > 2800 && botLaunchEnc.getVelocity() > 2800){
           //beltindexer.set(min, kVelocity)
           belt.set(0.5);
         
       }
-      else if(System.currentTimeMillis() >= launchCountdown &&
-          launchStatus == true && ballCount > ballsLeft && mode == 1){
+      else if(launchStatus == true && ballCount > ballsLeft && mode == 1
+          && topLaunchEnc.getVelocity() > 2800 && botLaunchEnc.getVelocity() > 2800){
         belt.set(0.5);
       }
     }
@@ -272,7 +272,9 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     vision.pipeline.setDouble(0);
     ballsOut.ballsIn();
+    System.out.println(ballCount);
     beltIndexer();
+    System.out.println(launchStatus);
     int finalChoice = (int)autoChoice.getSelected();
     basicallyAI.fullAuto(finalChoice);
   }

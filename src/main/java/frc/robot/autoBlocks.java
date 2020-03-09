@@ -49,16 +49,23 @@ public class autoBlocks {
     int stage = -1;
     launchAngler launcheyBoi = new launchAngler();
     public void straight(double inches){
+        boolean direction;
+        if(inches < 0){
+            direction = false;
+        }
+        else{
+            direction = true;
+        }
         if(Robot.stageStart){
             Robot.startPos = Robot.frEnc.getPosition();
             Robot.stageStart = false;
         }
         double encTicks = distanceToEnc(inches);
-        if(Robot.flEnc.getPosition() <  Robot.startPos + encTicks){
-            Robot.scoot.driveCartesian(0, 1, 0);
+        if(Robot.flEnc.getPosition() <  Robot.startPos + encTicks && direction == true){
+            Robot.scoot.driveCartesian(0, 0.5, 0);
         }
-        else if(Robot.flEnc.getPosition() >  Robot.startPos + encTicks){
-            Robot.scoot.driveCartesian(0, -1, 0);
+        else if(Robot.flEnc.getPosition() >  Robot.startPos + encTicks && direction == false){
+            Robot.scoot.driveCartesian(0, -0.5, 0);
         }
         else{
             Robot.scoot.driveCartesian(0, 0, 0);

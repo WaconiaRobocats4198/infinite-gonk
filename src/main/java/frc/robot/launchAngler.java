@@ -29,7 +29,7 @@ public class launchAngler {
         // System.out.println("atRange");
         if(ranger.rangeFinder() > 70 && ranger.rangeFinder() < 266){
             // System.out.println(howFar + " distance");
-            Robot.targetAngle = 0.0006925*Math.pow(atRange, 2)+-0.242*(atRange)+55.2;
+            Robot.targetAngle = 0.0006922*Math.pow(atRange, 2)+-0.24+2*(atRange)+56;
             // System.out.println(Robot.targetAngle + " targetAngle");
             angleSet(Robot.targetAngle);
         }
@@ -57,10 +57,10 @@ public class launchAngler {
             Robot.pitcher.set(0.25);
         }
         else if(Robot.pitchEnc.getPosition() < positionTarget){
-            Robot.pitcher.set(.2*Math.pow(Math.abs(Robot.pitchEnc.getPosition()-positionTarget), 0.8));
+            Robot.pitcher.set(.2*Math.pow(Math.abs(Robot.pitchEnc.getPosition()-positionTarget), 0.9));
         }
         else if(Robot.pitchEnc.getPosition() > positionTarget){
-            Robot.pitcher.set(-.2*Math.pow(Math.abs(Robot.pitchEnc.getPosition()-positionTarget), 0.8));
+            Robot.pitcher.set(-.2*Math.pow(Math.abs(Robot.pitchEnc.getPosition()-positionTarget), 0.9));
         }
         else{
             Robot.pitcherPID.setReference(0, ControlType.kVelocity);

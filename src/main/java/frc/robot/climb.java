@@ -10,12 +10,12 @@ import com.revrobotics.CANPIDController;
 public class climb{
     void winch(){
         int direction;
-        if(Robot.ps4.getRawButton(4)){direction = -1;}
+        if(Robot.logi.getRawButton(3)){direction = -1;}
         else{direction = 1;}
-        while(Robot.ps4.getRawButton(5)){
+        while(Robot.logi.getRawButton(10)){
             Robot.fricWheel.set(-1 * direction);
         }
-        while(Robot.ps4.getRawButton(6)){
+        while(Robot.logi.getRawButton(11)){
             Robot.climbWinch.set(-1 * direction);
         }
     }

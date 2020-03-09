@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
 
   autoBlocks basicallyAI = new autoBlocks();
 
-  limelight vision = new limelight();
+  static limelight vision = new limelight();
 
   climb climber = new climb();
 
@@ -166,7 +166,7 @@ public class Robot extends TimedRobot {
 
     // System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft && beltCheck == false){
-      uSpeedControl.setReference(2700, ControlType.kVelocity);
+      uSpeedControl.setReference(vision.rangeFinder(), ControlType.kVelocity);
       lSpeedControl.setReference(2700, ControlType.kVelocity);
       if(launchStatus == true && mode == 2
         && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2600){
@@ -395,18 +395,18 @@ public class Robot extends TimedRobot {
     else{
       vision.pipeline.setDouble(1);
       if(logi.getRawButton(8)){
-        if(pitchEnc.getPosition() > 0){
+        if(pitchEnc.getPosition() > 0.5){
           pitcher.set(-0.25);
         }
-        else if(pitchEnc.getPosition() < -2){
+        else if(pitchEnc.getPosition() < -0.5){
           pitcher.set(0.25);
         }
         else{
-          pitcher.set(-.24*(pitchEnc.getPosition()-1));
+          pitcher.set(-0.5*(pitchEnc.getPosition()));
         }
         // sniper.angleSet(50);
       }
-      else if(logi.getRawButton(10)){
+      else if(logi.getRawButton(5)){
         sniper.angleSet(0);
       }
       else if(climbState == -1){
@@ -424,7 +424,6 @@ public class Robot extends TimedRobot {
       else{
         if(logi.getRawButton(3)){
           pitcher.set(logi.getRawAxis(0)*0.25);
-          stay = pitchEnc.getPosition();
         }
       }
         scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
@@ -433,7 +432,7 @@ public class Robot extends TimedRobot {
       if(ps4.getRawButtonPressed(14)){
         climbState = climbState * -1;
       }
-      if(ps4.getRawButton(6) || ps4.getRawButton(5)){
+      if(logi.getRawButton(10) || logi.getRawButton(11)){
         climber.winch();
       }
       else{

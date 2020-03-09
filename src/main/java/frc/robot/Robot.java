@@ -166,8 +166,9 @@ public class Robot extends TimedRobot {
 
     // System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft && beltCheck == false){
-      uSpeedControl.setReference(vision.rangeFinder(), ControlType.kVelocity);
-      lSpeedControl.setReference(2700, ControlType.kVelocity);
+      int launchSpeed = (int)(10.93367*vision.rangeFinder() + 91.7857);
+      uSpeedControl.setReference(launchSpeed, ControlType.kVelocity);
+      lSpeedControl.setReference(launchSpeed, ControlType.kVelocity);
       if(launchStatus == true && mode == 2
         && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2600){
           //beltindexer.set(min, kVelocity)

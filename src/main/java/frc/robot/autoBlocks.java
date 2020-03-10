@@ -1,31 +1,15 @@
 package frc.robot;
 
-import com.revrobotics.ControlType;
 
-// import edu.wpi.first.wpilibj.drive.MecanumDrive;
-// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-// import com.revrobotics.CANSparkMax;
-// import com.revrobotics.CANEncoder;
-// import edu.wpi.first.networktables.NetworkTable;
-// import edu.wpi.first.networktables.NetworkTableEntry;
-// import edu.wpi.first.networktables.NetworkTableInstance;
-// import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.trajectory.*;
+import java.io.IOException;
+import java.nio.file.Path;
 
 
 public class autoBlocks {
     public double lastRotation;
-    public void autoBelt(){
-        if(Robot.beltEnc.getPosition() < Robot.currentPos){
-            Robot.belt.set(0.5);
-          }
-          else if(Robot.beltEnc.getPosition() > Robot.currentPos
-             && Robot.inSensor.get() == false){
-            Robot.belt.set((Robot.currentPos-Robot.beltEnc.getPosition())/10);
-          }
-          else{
-            Robot.belt.set(0);
-          }
-    }
     public void autoIntake(boolean running){
         if(running){
             if(Robot.pitchEnc.getPosition() > 0.5){
@@ -178,11 +162,11 @@ public class autoBlocks {
                     }
                 break;
                 case 1:
-                    autoLime.pipeline.setDouble(0);
+                    
                     launcheyBoi.tip(); 
                     // launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
-                    Robot.ballsOut.ballsIn();
+                    
                     if(Robot.ballCount == 0){
                         stage++;
                     }
@@ -192,7 +176,6 @@ public class autoBlocks {
                     rotate(Robot.gyroRead[0]-lastRotation);
                 break;
                 case 3:
-                    autoBelt();
                     autoIntake(true);
                     straight(-194);
                     Robot.pigeon.getYawPitchRoll(Robot.gyroRead);
@@ -203,12 +186,12 @@ public class autoBlocks {
                     stage++;
                 break;
                 case 5:
-                    autoLime.pipeline.setDouble(0);
+                    
                     autoLime.camControl();
                     launcheyBoi.tip();
                     Robot.ballsLeft = 0;
                     // launcheyBoi.autoLaunchTime();
-                    Robot.ballsOut.ballsIn();
+                    
                     Robot.launch(2);
                     if(Robot.ballCount == 0){
                         stage++;
@@ -245,13 +228,13 @@ public class autoBlocks {
                     }
                 break;
                 case 2:
-                    autoLime.pipeline.setDouble(0);
+                    
                     autoLime.camControl();
                     launcheyBoi.tip();
                     Robot.ballsLeft = 0;
                     // launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
-                    Robot.ballsOut.ballsIn();
+                    
                     if(Robot.ballCount == 0){
                         stage++;
                     }
@@ -272,13 +255,13 @@ public class autoBlocks {
                 }
                 break;
                 case 0:
-                    autoLime.pipeline.setDouble(0);
+                    
                     autoLime.camControl();
                     launcheyBoi.tip();
                     // launcheyBoi.autoLaunchTime();
                     Robot.launch(2);
                     Robot.ballsLeft = 0;
-                    Robot.ballsOut.ballsIn();
+                    
                     if(Robot.ballCount <= 0){
                         stage++;
                         Robot.topLaunch.set(0);
@@ -293,12 +276,12 @@ public class autoBlocks {
         }
     }
     public void autoCam(){
-        autoLime.pipeline.setDouble(0);
+        
         autoLime.camControl();
         launcheyBoi.tip();
         // launcheyBoi.autoLaunchTime();
         Robot.launch(2); 
-        Robot.ballsOut.ballsIn();
+        
         if(Robot.ballCount >= 0){
             stage++;
             Robot.topLaunch.set(0);

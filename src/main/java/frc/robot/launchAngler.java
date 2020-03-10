@@ -22,10 +22,10 @@ public class launchAngler {
         // else{
         //    centered = true;
         // }
-        if(ranger.rangeFinder() > atRange + 1 || ranger.rangeFinder() < atRange -1){
-            atRange = ranger.rangeFinder();
-        }
-        System.out.println(ranger.rangeFinder());
+        // if(ranger.rangeFinder() > atRange + 1 || ranger.rangeFinder() < atRange -1){
+        atRange = ranger.rangeFinder();
+        // }
+        // System.out.println(ranger.rangeFinder());
         // System.out.println("atRange");
         if(ranger.rangeFinder() > 70 && ranger.rangeFinder() < 266){
             // System.out.println(howFar + " distance");
@@ -46,8 +46,6 @@ public class launchAngler {
     public void angleSet(double targetAngle){
         // pitchEnc.getPosition()*(-360/71) + 50
         positionTarget = (targetAngle-50)/(-5.07);
-
-        System.out.println(positionTarget);
         // System.out.println(positionTarget + " positionTarget");
 
         if(Robot.pitchEnc.getPosition() > positionTarget + 1){

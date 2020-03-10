@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 
   public static double launchCountdown;
   public static double launchWait = 1000;
-  public static boolean launchStatus = true;
+  public static boolean launchStatus = false;
   public static boolean beltCheck = true;
 
   public static boolean ballWasFront = false;
@@ -129,6 +129,7 @@ public class Robot extends TimedRobot {
 
   public static int climbState = 1;
 
+  public static int launchSpeed;
   public static ballCounter ballsOut = new ballCounter();
 
   autoBlocks basicallyAI = new autoBlocks();
@@ -166,16 +167,19 @@ public class Robot extends TimedRobot {
 
     // System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft && beltCheck == false){
-      int launchSpeed = (int)(10.93367*vision.rangeFinder() + 91.7857);
+      launchSpeed = (int)(10.93367*vision.rangeFinder() + 91.7857);
       uSpeedControl.setReference(launchSpeed, ControlType.kVelocity);
       lSpeedControl.setReference(launchSpeed, ControlType.kVelocity);
+      if(ps4.getRawButton(2) == false){
+        launchStatus = true;
+      }
       if(launchStatus == true && mode == 2
-        && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2600){
+        && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > launchSpeed){
           //beltindexer.set(min, kVelocity)
           belt.set(0.5);
         
       }
-      else if(launchStatus == true && ballCount > ballsLeft && mode == 1
+      else if(launchStatus == true && mode == 1
           && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2550){
         belt.set(0.5);
       }
@@ -272,15 +276,15 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    System.out.println(basicallyAI.stage);
+    // System.out.println(basicallyAI.stage);
     vision.pipeline.setDouble(0);
     if(zero.get()){
       pitchEnc.setPosition(0);
     }
     ballsOut.ballsIn();
-    System.out.println(ballCount);
+    // System.out.println(ballCount);
     beltIndexer();
-    System.out.println(launchStatus);
+    // System.out.println(launchStatus);
     int finalChoice = (int)autoChoice.getSelected();
     basicallyAI.fullAuto(finalChoice);
   }

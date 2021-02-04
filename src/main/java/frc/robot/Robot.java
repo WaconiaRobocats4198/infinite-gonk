@@ -329,8 +329,8 @@ public class Robot extends TimedRobot {
         belt.set(0);
       }
       if(logi.getRawButton(1)){
-        topLaunch.set(1);//this was 0.2, boost due to jackson complaint
-        bottomLaunch.set(0.2);
+        topLaunch.set(0.4);//these were 0.2, boost due to jackson complaint
+        bottomLaunch.set(0.7);
       }
       else{
         topLaunch.set(0);

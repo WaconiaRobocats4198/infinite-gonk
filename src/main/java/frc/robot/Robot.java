@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -29,9 +31,11 @@ import com.revrobotics.CANPIDController;
 
 public class Robot extends TimedRobot {
   
-  public static Joystick ps4 = new Joystick(0);
+  public static Joystick logi1 = new Joystick(0); //0 drives forward, backward, and crab
 
-  public static Joystick logi = new Joystick(1);
+  public static Joystick logi = new Joystick(1);  //1 does twisting
+
+  public static Joystick ext = new Joystick(2);   //2 Controls all button for shooting and axis for angling the pitcher
 
   public static CANSparkMax frontL = new CANSparkMax(1, MotorType.kBrushless);
   public static CANSparkMax frontR = new CANSparkMax(2, MotorType.kBrushless);
@@ -95,7 +99,7 @@ public class Robot extends TimedRobot {
 
   public static double launchCountdown;
   public static double launchWait = 1000;
-  public static boolean launchStatus = false;
+  public static boolean launchStatus = true;
   public static boolean beltCheck = true;
 
   public static boolean ballWasFront = false;
@@ -122,21 +126,23 @@ public class Robot extends TimedRobot {
   public static double startPos;
   public static boolean stageStart = true;
 
+  public static boolean demoRunner = false;
+
   public static double targetAngle;
-  public static double stay;
 
   public static double autoDelay;
 
   public static int climbState = 1;
 
-  public static int launchSpeed;
   public static ballCounter ballsOut = new ballCounter();
 
   autoBlocks basicallyAI = new autoBlocks();
 
-  static limelight vision = new limelight();
+  limelight vision = new limelight();
 
   climb climber = new climb();
+
+  //public static int toggleLime = 1;
 
   // colorParse colorWheel = new colorParse();
 
@@ -145,11 +151,13 @@ public class Robot extends TimedRobot {
 
   // public ComplexWidget auto =
   //   tab.add("Auto", autoChoice);
-
+ 
+ double controlMultiply = 1;
   
-  double controlMultiply = 1;
+      
 
-  public static void launch(int mode){
+
+  public static void launch(int mode)  {
     uSpeedControl.setP(kP);
     uSpeedControl.setI(kI);
     uSpeedControl.setD(kD);
@@ -163,31 +171,45 @@ public class Robot extends TimedRobot {
     lSpeedControl.setIZone(kIz);
     lSpeedControl.setFF(kFF);
     lSpeedControl.setOutputRange(kMinOutput, kMaxOutput);
-
+ 
+      
 
     // System.out.println(ballCount>ballsLeft);
     if(ballCount > ballsLeft && beltCheck == false){
-      launchSpeed = (int)(10.93367*vision.rangeFinder() + 91.7857);
-      uSpeedControl.setReference(launchSpeed, ControlType.kVelocity);
-      lSpeedControl.setReference(launchSpeed, ControlType.kVelocity);
-      if(ps4.getRawButton(2) == false){
-        launchStatus = true;
-      }
-      if(launchStatus == true && mode == 2
-        && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > launchSpeed){
+      uSpeedControl.setReference(2250, ControlType.kVelocity); //was 3000rpm controls top launch overall speed
+      lSpeedControl.setReference(2500, ControlType.kVelocity); //controls bottom launch overall speed
+      if(System.currentTimeMillis() >= launchCountdown &&      //does not wait before beginning launch
+        launchStatus == true && mode == 2){
           //beltindexer.set(min, kVelocity)
-          belt.set(0.5);
+          //belt.set(0.5); //internal belt speed
+          if(outSensor.get() )            //when running launch, if the sensor senses a ball going out, it reverses the internal belt
+        {
+          belt.set(-0.3);
+        }
+        else if (outSensor.get() == false)
+        {
+          belt.set(0.35);
+        }
+
+        }
+      else if(System.currentTimeMillis() >= launchCountdown && //current mode, waits for a moment before launch
+      launchStatus == true && ballCount > ballsLeft && mode == 1){ 
+       //belt.set() was 0.5
         
-      }
-      else if(launchStatus == true && mode == 1
-          && topLaunchEnc.getVelocity() > 2550 && botLaunchEnc.getVelocity() > 2550){
-        belt.set(0.5);
+        if(outSensor.get() )              //when running launch, if the sensor senses a ball going out, it reverses the internal belt
+        {
+          belt.set(-0.3);
+        }
+        else if (outSensor.get() == false)
+        {
+          belt.set(0.35);
+        }
       }
     }
-    else if(outSensor.get()){
+    else if(outSensor.get()){             //after launching a ball belt runs backwards
       belt.set(-0.4);
     }
-    else if(outSensor.get() == false){
+    else if(outSensor.get() == false){    //checks that nothing is going out and stops the belt if there is nothing
       belt.set(0);
       beltCheck = false;
     }
@@ -198,8 +220,10 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public static void beltIndexer(){
-    if(inSensor.get()){
+
+
+  public static void beltIndexer() {
+    if(inSensor.get()){                   //when loading balls it moves the belt forward slightly to prepare for the next ball
       // beltDrive.setReference(400, kVelocity)
       if(ballCount < 4){
         currentPos = beltEnc.getPosition() + 0.1;
@@ -276,15 +300,9 @@ public class Robot extends TimedRobot {
   
   @Override
   public void autonomousPeriodic() {
-    // System.out.println(basicallyAI.stage);
     vision.pipeline.setDouble(0);
-    if(zero.get()){
-      pitchEnc.setPosition(0);
-    }
     ballsOut.ballsIn();
-    // System.out.println(ballCount);
     beltIndexer();
-    // System.out.println(launchStatus);
     int finalChoice = (int)autoChoice.getSelected();
     basicallyAI.fullAuto(finalChoice);
   }
@@ -300,7 +318,8 @@ public class Robot extends TimedRobot {
     // System.out.println(logi.getRawAxis(0));
     // System.out.println(pitchEnc.getPosition() + " pitchEnc");
     // System.out.println(inSensor.get());;
-    if(zero.get()){
+    if(zero.get())
+    {
       pitchEnc.setPosition(0);
     }
     // System.out.println(pitchEnc.getPosition());
@@ -314,53 +333,66 @@ public class Robot extends TimedRobot {
     pitcherPID.setP(1e-5);
     pitcherPID.setI(1e-7);
     
-    if (logi.getRawButtonPressed(11)) {
+    if (ext.getRawButtonPressed(11)) 
+    {
       basicallyAI.fullAuto(3);
     }
     
-    if(logi.getRawButton(3)){
-      if(logi.getRawButton(6)){
+    if(ext.getRawButton(2)) 
+    {
+      if(ext.getRawButton(7))
+      {
         belt.set(0.3);
       }
-      else if(logi.getRawButton(7)){
+      else if(ext.getRawButton(8))
+      {
         belt.set(-0.3);
       }
-      else{
+      else
+      {
         belt.set(0);
       }
-      if(logi.getRawButton(1)){
-        topLaunch.set(0.4);//these were 0.2, boost due to jackson complaint
-        bottomLaunch.set(0.7);
+      if(ext.getRawButton(1))
+      {
+        topLaunch.set(0.4);             //og 0.4,revision 1:0.3950
+        bottomLaunch.set(0.6);         //og 0.7,revision 1:0.4386
       }
-      else{
+      else
+      {
         topLaunch.set(0);
         bottomLaunch.set(0);
       }
       
     }
-    else if(logi.getRawButtonPressed(2)){
+    else if(ext.getRawButtonPressed(5))
+    {
       launchCountdown = System.currentTimeMillis() + launchWait;
       ballsLeft = ballCount - 1;
     }
-    else if(logi.getRawButtonPressed(1)){
+    else if(ext.getRawButtonPressed(1))
+    {
       launchCountdown = System.currentTimeMillis() + launchWait;
       ballsLeft = 0;
     }
-    else if(logi.getRawButton(2)){
-      launch(1);
+    else if(ext.getRawButton(1))
+    {
+        launch(1);
     }
-    else if(logi.getRawButton(1)){
-      launch(2);
-    }
-    else{
-      if(beltEnc.getPosition() < currentPos){
+    //else if(logi.getRawButton(8)){      //launch descriptions further up in code- not used for challenges
+    //launch(2);
+    //}
+    else
+    {
+      if(beltEnc.getPosition() < currentPos)
+      {
         belt.set(0.5);
       }
-      else if(beltEnc.getPosition() > currentPos
-         && inSensor.get() == false){
+      else if(beltEnc.getPosition() > currentPos && inSensor.get() == false)
+      {
         belt.set((currentPos-beltEnc.getPosition())/10);
       }
-      else{
+      else
+      {
         belt.set(0);
       }
       topLaunch.set(0);
@@ -368,11 +400,11 @@ public class Robot extends TimedRobot {
     }
 
 
-    if(logi.getRawButton(8)){
+    if(ext.getRawButton(8)){
       pitcherIn.set(1);
       intake.set(0.3);
     }
-    else if(logi.getRawButton(9)){
+    else if(ext.getRawButton(9)){
       pitcherIn.set(-1);
       intake.set(-0.3);
     }
@@ -381,76 +413,126 @@ public class Robot extends TimedRobot {
       intake.set(0);
     }
 
-    if(ps4.getRawButtonReleased(3)){
+    if(logi.getRawButtonReleased(3)){
       // System.out.println("SHOULD BE FLIPPING");
       controlMultiply = controlMultiply * (-1);
     }    
     
     // System.out.println(controlMultiply);
       
-    if(logi.getRawButtonReleased(1) || logi.getRawButtonReleased(2)){
+    if(ext.getRawButtonReleased(1) || ext.getRawButtonReleased(2)){
       beltCheck = true;
     }
 
-    if(ps4.getRawButton(2)){
-      vision.pipeline.setDouble(0);
-      vision.camControl();
-      sniper.tip();
+
+
+      
+    
+    /*
+    if (ext.getRawButtonPressed(4)){
+      toggleLime *= -1;
+    } 
+
+    if(toggleLime == 1)
+    {              //while ext 4 pressed the limelight will be off - you can still drive and pickup balls 
+      vision.pipeline.setDouble(1);       //when (1) limelight is off
+      scoot.driveCartesian(logi1.getRawAxis(0) * controlMultiply, -logi1.getRawAxis(1) * controlMultiply, logi.getRawAxis (0)); //allows for drive while stopping limelight
+      if(ext.getRawButton(8))
+      {            //while holding ext 8 the pitcher will rotate to its specific position to load balls
+        if(pitchEnc.getPosition() > 1)
+        { 
+          pitcher.set(-0.25); 
+        }
+        else if(pitchEnc.getPosition() < -1)
+        {
+          pitcher.set(0.25);
+        }
+        else
+        {
+          pitcher.set((-.24*pitchEnc.getPosition()));
+        }
+      }
+    else if(toggleLime == -1)
+      {
+      //vision.pipeline.setDouble(0);       //when (1) limelight is off
+      scoot.driveCartesian(logi1.getRawAxis(0) * controlMultiply, -logi1.getRawAxis(1) * controlMultiply, logi.getRawAxis (0)); //allows for drive while stopping limelight
+      if(ext.getRawButton(8))
+      {                                     //while holding ext 8 the pitcher will rotate to its specific position to load balls
+        if(pitchEnc.getPosition() > 1)
+        { 
+          pitcher.set(-0.25); 
+        }
+        else if(pitchEnc.getPosition() < -1)
+        {
+          pitcher.set(0.25);
+        }
+        else
+        {
+          pitcher.set((-.24*pitchEnc.getPosition()));
+        }
+      }
+   }
+  }
+*/
+    if(logi.getRawButton(1)){      //while holding logi 1 - limelight on, limelight angling, limelight positioning
+      vision.pipeline.setDouble(0);   //when (1) limelight is off
+      vision.camControl();              //Made the robot spin like murder - no longer does so, no idea what we did to fix...
+      sniper.tip();                     //angles pitcher based on limelight data
     }
     else{
       vision.pipeline.setDouble(1);
-      if(logi.getRawButton(8)){
-        if(pitchEnc.getPosition() > 0.5){
+      if(ext.getRawButton(8)){          //while holding ext 8 the pitcher will rotate to its specific position to load balls
+        if(pitchEnc.getPosition() > 1){
           pitcher.set(-0.25);
-        }
-        else if(pitchEnc.getPosition() < -0.5){
+      }
+        else if(pitchEnc.getPosition() < -1){
           pitcher.set(0.25);
         }
         else{
-          pitcher.set(-0.5*(pitchEnc.getPosition()));
+          pitcher.set((-.24*pitchEnc.getPosition()));
         }
         // sniper.angleSet(50);
       }
-      else if(logi.getRawButton(5)){
+      else if(ext.getRawButton(10)){
         sniper.angleSet(0);
       }
-      else if(climbState == -1){
-        if(pitchEnc.getPosition() > -3){
-          pitcher.set(-0.24);
-          
-        }
-        else if(pitchEnc.getPosition() > -3.353 && pitchEnc.getPosition() <= -3){
-          pitcher.set((pitchEnc.getPosition() + 3.35)/-3);
-        }
-      }
-      else if(logi.getRawAxis(0) < 0.05 && logi.getRawAxis(0) > -0.05){
+      //else if(climbState == -1){
+       // if(pitchEnc.getPosition() > -3){
+       //   pitcher.set(-0.24);
+        //}
+        //else if(pitchEnc.getPosition() > -3.353 && pitchEnc.getPosition() <= -3){
+       //   pitcher.set((pitchEnc.getPosition() + 3.35)/-3);
+       // }
+      //}
+
+      else if(ext.getRawAxis(0) < 0.05 && ext.getRawAxis(0) > -0.05){
         pitcherPID.setReference(0, ControlType.kVelocity);
       }
       else{
-        if(logi.getRawButton(3)){
-          pitcher.set(logi.getRawAxis(0)*0.25);
+        if(ext.getRawButton(2)){
+          pitcher.set(ext.getRawAxis(0)*0.25);
         }
       }
-        scoot.driveCartesian(ps4.getRawAxis(0) * controlMultiply, -ps4.getRawAxis(1) * controlMultiply, ps4.getRawAxis(2) * controlMultiply);
+
+    
+        scoot.driveCartesian(logi1.getRawAxis(0) * controlMultiply, -logi1.getRawAxis(1) * controlMultiply, logi.getRawAxis (0)); //normal controls for drive base
+      
+       
     // scoot.driveCartesian(roll, crab, rotate);
       }
-      if(ps4.getRawButtonPressed(14)){
-        climbState = climbState * -1;
-      }
-      if(logi.getRawButton(10) || logi.getRawButton(11)){
-        climber.winch();
-      }
-      else{
-        climbWinch.set(0);
-        fricWheel.set(0);
-      }
-      if(ps4.getRawButton(3)){
-        sniper.angleSet(29);
-      }
-    // if(ps4.getRawButton(4)){
+     // if(ext.getRawButtonPressed(14)){
+       // climbState = climbState * -1;
+      //}
+      //if(ext.getRawButton(6) || ext.getRawButton(5)){
+        //climber.winch();
+      //}
+      //else{
+        //climbWinch.set(0);
+    //}
+    // if(logi.getRawButton(4)){
     //   colorWheel.ColorControl(4);
     // }
-    // if(ps4.getRawButton(5)){
+    // if(logi.getRawButton(5)){
     //   colorWheel.ColorControl(5);
     // }
     

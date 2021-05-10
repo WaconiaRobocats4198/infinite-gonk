@@ -27,18 +27,49 @@ public class launchAngler {
         // }
         // System.out.println(ranger.rangeFinder());
         // System.out.println("atRange");
-        if(ranger.rangeFinder() > 70 && ranger.rangeFinder() < 266){
+        if(ranger.rangeFinder() > 70 && ranger.rangeFinder() < 300){
+                 if(ranger.rangeFinder()>=110 && ranger.rangeFinder()<170)
+                    {
+                        
+                        Robot.targetAngle = 0.000557516*Math.pow(atRange, 2) +- 0.29449*(atRange) + 66.2420 ; //c was 66.2420
+                    
+                    }
+             else if(ranger.rangeFinder()>=170 && ranger.rangeFinder()<220)
+                    {
+
+                        Robot.targetAngle = 0.000557516*Math.pow(atRange, 2) +- 0.29449*(atRange) + 66.7420 ; //c was 66.7420
+                    
+                    }
+             else if(ranger.rangeFinder()>=220 && ranger.rangeFinder()<300)
+                    {
+
+                        Robot.targetAngle = 0.000557516*Math.pow(atRange, 2) +- 0.29449*(atRange) + 66.2420 ; //c was 66.2420
+                    
+                    }
+             else 
+                    {
+
+                        Robot.targetAngle = 0.000557516*Math.pow(atRange, 2) +- 0.29449*(atRange) + 66.2420 ; //c was 66.2420
+                    
+                    }       
+            
+            /*
+            //original
+            
             // System.out.println(howFar + " distance");
+            Robot.targetAngle = 0.000557516*Math.pow(atRange, 2) +- 0.29449*(atRange) + 66.2420 ; 
             Robot.targetAngle = 0.0006922*Math.pow(atRange, 2)+-0.24+2*(atRange)+56;
             // System.out.println(Robot.targetAngle + " targetAngle");
-            angleSet(Robot.targetAngle);
+            */
+             angleSet(Robot.targetAngle);
+
         }
         else{
-            if(Robot.logi.getRawAxis(0) < 0.05 && Robot.logi.getRawAxis(0) > -0.05){
+            if(Robot.ext.getRawAxis(0) < 0.05 && Robot.ext.getRawAxis(0) > -0.05){
                 Robot.pitcherPID.setReference(0, ControlType.kVelocity);
               }
             else{
-                Robot.pitcher.set(Robot.logi.getRawAxis(0)*0.25);
+                Robot.pitcher.set(Robot.ext.getRawAxis(0)*0.25);
             }
         }
         

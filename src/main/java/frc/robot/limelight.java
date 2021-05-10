@@ -45,7 +45,7 @@ public class limelight{
       //   Limit.add("Target",false)
       //   .getEntry();
       final double visionSpeed = .666;
-      final double turnval = .4;
+      final double turnval = .4;//originally 0.4
       public double xTranslate;
       public double yTranslate;
       public double yOffLimit = -509;
@@ -68,28 +68,29 @@ public class limelight{
         if(isTarget != 0){
           // System.out.println(offsetCalculator() + " calculated " + xTranslate + " actual");
             // System.out.println(-0.3*Math.pow(-(xTranslate - offsetCalculator())/57, 0.6));
-            if(xTranslate > offsetCalculator()){
+            
+            if(xTranslate > offsetCalculator() + 1){ //was + 0.1
                 // System.out.println(-0.4*Math.pow(-xTranslate/54, 0.5));
-                Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.25*Math.pow((xTranslate + offsetCalculator())/57, 0.9));
+                Robot.scoot.driveCartesian(Robot.logi1.getRawAxis(0), -Robot.logi1.getRawAxis(1), 0.25*Math.pow((xTranslate + offsetCalculator())/57, 0.9));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.2);
             }
-            else if(xTranslate <   offsetCalculator()){
+            
+            else if(xTranslate <   offsetCalculator() - 1){ //was - 0.1
               // System.out.println(0.4*Math.pow(xTranslate/54, 0.5));
-                Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), -0.25*Math.pow(-(xTranslate - offsetCalculator())/57, 0.9));
+                Robot.scoot.driveCartesian(Robot.logi1.getRawAxis(0), -Robot.logi1.getRawAxis(1), -0.25*Math.pow(-(xTranslate - offsetCalculator())/57, 0.9));
                 // Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), 0.2);
             }
             else{
-              Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), Robot.ps4.getRawAxis(2)); 
+              Robot.scoot.driveCartesian(Robot.logi1.getRawAxis(0), -Robot.logi1.getRawAxis(1), Robot.logi.getRawAxis(0)); 
             }
         }
         else{
-          Robot.scoot.driveCartesian(Robot.ps4.getRawAxis(0), -Robot.ps4.getRawAxis(1), Robot.ps4.getRawAxis(2));
+          Robot.scoot.driveCartesian(Robot.logi1.getRawAxis(0), -Robot.logi1.getRawAxis(1), Robot.logi.getRawAxis(0));
         }
-
     }
     public double offsetCalculator(){
       double inchOffRobot = 8.5;
-      double offset = Math.atan(inchOffRobot/rangeFinder()); 
+      double offset = Math.atan(inchOffRobot/(rangeFinder()));
       
       offset = (offset * 180)/Math.PI;
       return offset;
@@ -97,10 +98,10 @@ public class limelight{
     
     public double rangeFinder(){
       isTarget = (int)tv.getDouble(0);
-      double heightFloor = 23;
-      double llOffset = 8.25;
-      double llAngle = 27;
-      double targetHeight = 91.125;
+      double heightFloor = 23;//originally 23
+      double llOffset = 8.25;//originally 8.25    note-not used
+      double llAngle = 27;//originally 27
+      double targetHeight = 91.125; //originally 91.125
 
       double yOff = ty.getDouble(0.0);
       double xOff = tx.getDouble(0.0);
@@ -111,11 +112,12 @@ public class limelight{
         // System.out.println("TARGET ACQUIRED");
         distance = (int)((targetHeight-heightFloor)/Math.tan((yOff + llAngle) * ((2 * Math.PI)/360)));
         // distance = distance - (llOffset * Math.sin(Math.abs(xOff) * ((2 * Math.PI)/360)));
+        
       }
       else{
         distance = -1;
       }
-      return distance;
+      return distance+29;
     }
     
 }
